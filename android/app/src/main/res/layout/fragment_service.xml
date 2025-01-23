@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_bg"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.ServiceFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:id="@+id/wrapper"
+        android:layout_marginBottom="10dp"
+        android:background="@android:color/transparent"
+        android:layout_height="match_parent">
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_wrp"
+            android:layout_height="0dp">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="250dp">
+
+                <com.google.android.material.appbar.CollapsingToolbarLayout
+                    android:layout_width="match_parent"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                    app:contentScrim="#369"
+                    android:background="@drawable/service_avatar_bg"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:id="@+id/avatar"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/arial"
+                        android:textSize="22dp"
+                        android:id="@+id/name"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="15dp"
+                        android:layout_gravity="bottom|center_horizontal"
+                        android:textColor="#fff"/>
+
+                    <androidx.appcompat.widget.Toolbar
+                        android:layout_width="match_parent"
+                        android:id="@+id/tb"
+                        app:contentInsetStart="0dp"
+                        app:contentInsetEnd="0dp"
+                        app:layout_collapseMode="pin"
+                        android:layout_height="40dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:paddingEnd="10dp"
+                            android:background="#50000000"
+                            android:paddingStart="10dp"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/back"
+                                android:id="@+id/back"
+                                app:tint="#fff"/>
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="1dp"
+                                android:layout_weight="1"/>
+
+                            <ImageView
+                                android:src="@drawable/star_outline"
+                                android:layout_width="20dp"
+                                app:tint="#fff"
+                                android:id="@+id/rate_btn"
+                                android:layout_height="20dp"/>
+
+                            <ImageView
+                                android:src="@drawable/image"
+                                android:layout_width="20dp"
+                                app:tint="#fff"
+                                android:layout_marginStart="15dp"
+                                android:id="@+id/gallery_btn"
+                                android:layout_height="20dp"/>
+
+                            <ImageView
+                                android:layout_marginStart="15dp"
+                                android:src="@drawable/favorite_outline"
+                                android:layout_width="20dp"
+                                app:tint="#fff"
+                                android:id="@+id/add_to_fav"
+                                android:layout_height="20dp"/>
+
+                        </LinearLayout>
+
+                    </androidx.appcompat.widget.Toolbar>
+
+                </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:background="@android:color/transparent"
+                android:layout_height="match_parent"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:fillViewport="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:background="@android:color/transparent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:fontFamily="@font/arialbd"
+                            android:textSize="14dp"
+                            android:layout_weight="1"
+                            android:textColor="#232425"
+                            android:text="@string/rating_lbl"/>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:layout_width="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/rating_rv"/>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#ccc"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingStart="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:fontFamily="@font/arialbd"
+                            android:textSize="14dp"
+                            android:layout_weight="1"
+                            android:layout_marginBottom="5dp"
+                            android:textColor="#232425"
+                            android:text="@string/work_schedule_title"/>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/schedule_rv"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingStart="10dp"
+                        android:visibility="gone"
+                        android:layout_marginBottom="10dp"
+                        android:paddingEnd="10dp"
+                        android:id="@+id/address">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:fontFamily="@font/arialbd"
+                            android:textSize="14dp"
+                            android:textColor="#232425"
+                            android:layout_marginBottom="5dp"
+                            android:text="@string/address_title"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:fontFamily="@font/arial"
+                            android:textSize="13dp"
+                            android:textColor="#458B74"
+                            android:id="@+id/address_link"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="10dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:fontFamily="@font/arialbd"
+                            android:textSize="14dp"
+                            android:layout_weight="1"
+                            android:textColor="#232425"
+                            android:text="@string/average_session_title"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/arial"
+                            android:textSize="13dp"
+                            android:textColor="#666"
+                            android:id="@+id/average_duration"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/select_time_wrp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@android:color/transparent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/arialbd"
+                            android:textSize="14dp"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:textColor="#232425"
+                            android:layout_marginBottom="5dp"
+                            android:text="@string/booking_title"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="35dp"
+                                android:minHeight="0dp"
+                                android:minWidth="0dp"
+                                android:paddingStart="10dp"
+                                android:paddingEnd="10dp"
+                                android:id="@+id/date_btn"
+                                android:fontFamily="@font/arial"
+                                android:textSize="13dp"
+                                android:background="@drawable/standard_btn"
+                                android:textColor="#fff"
+                                android:textAllCaps="false"
+                                android:layout_marginEnd="5dp"
+                                android:text="@string/select_date_btn"/>
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="35dp"
+                                android:minHeight="0dp"
+                                android:minWidth="0dp"
+                                android:paddingStart="10dp"
+                                android:paddingEnd="10dp"
+                                android:id="@+id/time_btn"
+                                android:fontFamily="@font/arial"
+                                android:textSize="13dp"
+                                android:background="@drawable/standard_btn"
+                                android:textColor="#fff"
+                                android:textAllCaps="false"
+                                android:text="@string/select_time_btn"/>
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:layout_width="0dp"
+                                android:layout_height="35dp"
+                                android:minHeight="0dp"
+                                android:minWidth="0dp"
+                                android:layout_weight="1"
+                                android:paddingStart="10dp"
+                                android:paddingEnd="10dp"
+                                android:visibility="gone"
+                                android:id="@+id/select_branch_btn"
+                                android:layout_marginStart="5dp"
+                                android:fontFamily="@font/arial"
+                                android:textSize="13dp"
+                                android:background="@drawable/standard_btn"
+                                android:textColor="#fff"
+                                android:textAllCaps="false"
+                                android:text="@string/select_branch_btn"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:id="@+id/extra_wrp"
+                        android:visibility="gone"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/arialbd"
+                            android:textSize="14dp"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:textColor="#232425"
+                            android:layout_marginBottom="5dp"
+                            android:text="@string/extra_title"/>
+
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/extra_select_wrapper"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:id="@+id/booked_wrp"
+                        android:visibility="gone"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/arialbd"
+                            android:textSize="14dp"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:textColor="#232425"
+                            android:layout_marginBottom="5dp"
+                            android:text="@string/booked_title"/>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/booked_rv"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:layout_marginTop="10dp"
+                        android:id="@+id/gallery_wrp"
+                        android:visibility="gone"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/arialbd"
+                            android:textSize="14dp"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:textColor="#232425"
+                            android:layout_marginBottom="5dp"
+                            android:text="@string/gallery_title"/>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/gallery_rv"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:id="@+id/bottom_wrp"
+            android:visibility="gone"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="10dp"
+                android:visibility="gone"
+                android:paddingEnd="10dp"
+                android:id="@+id/selected_branch_wrp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:scrollHorizontally="true"
+                    android:fontFamily="@font/arial"
+                    android:textSize="14dp"
+                    android:textColor="#232425"
+                    android:layout_marginEnd="10dp"
+                    android:id="@+id/selected_branch_address"
+                    android:layout_weight="1"/>
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/close"
+                    android:id="@+id/remove_branch"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/arial"
+                android:textSize="14dp"
+                android:textColor="#232425"
+                android:background="@android:color/transparent"
+                android:layout_marginStart="10dp"
+                android:id="@+id/selected_time"
+                android:visibility="gone"
+                android:layout_marginEnd="10dp"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:textColor="#fff"
+                android:background="@drawable/standard_btn"
+                android:id="@+id/button"
+                android:layout_margin="10dp"
+                android:fontFamily="@font/arial"
+                android:textSize="15dp"
+                android:text="@string/book_btn"
+                android:textAllCaps="false" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <pl.droidsonroids.gif.GifImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/loader"
+        android:background="@android:color/transparent"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:id="@+id/loader"/>
+
+</FrameLayout>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.BroadcastFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:padding="10dp"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/top_wrp"
+            android:layout_marginBottom="15dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:id="@+id/back"
+                android:src="@drawable/back"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/arialbd"
+                android:layout_marginStart="5dp"
+                android:textSize="17dp"
+                android:textColor="#232425"
+                android:text="@string/broadcast_title"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="150sp"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
+            android:paddingEnd="10dp"
+            android:id="@+id/date_wrp"
+            android:paddingStart="10dp"
+            android:background="@drawable/standard_input"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:layout_weight="1"
+                android:fontFamily="@font/arial"
+                android:id="@+id/date_value"
+                android:textColor="#232425"
+                android:textSize="14dp"
+                android:background="@drawable/standard_input"
+                android:textColorHint="#666"
+                android:hint="@string/date_hint"/>
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/date"
+                android:id="@+id/date"/>
+
+        </LinearLayout>
+        
+        <Spinner
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/standard_input"
+            android:id="@+id/action"/>
+
+        <Spinner
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:visibility="gone"
+            android:id="@+id/branches"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/standard_input"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:maxLines="4"
+                android:scrollbars="vertical"
+                android:id="@+id/message"
+                android:hint="@string/message_hint"
+                android:minLines="2"
+                android:textSize="12dp"
+                android:maxLength="300"
+                android:gravity="start|top"
+                android:background="@drawable/standard_input"
+                android:layout_weight=".7"/>
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:id="@+id/button"
+            android:fontFamily="@font/arial"
+            android:textSize="13dp"
+            android:background="@drawable/standard_btn"
+            android:textColor="#fff"
+            android:textAllCaps="false"
+            android:text="@string/broadcast_btn"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arial"
+            android:textSize="13dp"
+            android:visibility="gone"
+            android:layout_marginTop="10dp"
+            android:textColor="#ff0000"
+            android:id="@+id/error"/>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

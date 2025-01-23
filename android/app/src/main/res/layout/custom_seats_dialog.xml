@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arialbd"
+            android:textSize="16dp"
+            android:textColor="#232425"
+            android:text="@string/custom_seats_title"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/close"
+            android:id="@+id/close"/>
+
+    </LinearLayout>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:fontFamily="@font/arial"
+        android:textSize="13dp"
+        android:textColor="#232425"
+        android:textColorHint="#666"
+        android:inputType="number"
+        android:digits="0123456789"
+        android:id="@+id/amount"
+        android:layout_marginTop="10dp"
+        android:paddingStart="12dp"
+        android:singleLine="true"
+        android:paddingEnd="12dp"
+        android:background="@drawable/auth_input_wrp"
+        android:layout_marginBottom="10dp"
+        android:hint="@string/custom_seats_hint"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:fontFamily="@font/arial"
+        android:id="@+id/button"
+        android:textSize="14dp"
+        android:background="@drawable/auth_btn"
+        android:textColor="#fff"
+        android:text="@string/save"
+        android:textAllCaps="false"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/arial"
+        android:textSize="13dp"
+        android:textColor="#ff0000"
+        android:visibility="gone"
+        android:id="@+id/error"
+        android:layout_marginTop="5dp"
+        android:gravity="center"/>
+
+</LinearLayout>

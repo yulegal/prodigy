@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arialbd"
+            android:textSize="15dp"
+            android:textColor="#232425"
+            android:text="@string/booking_info_title"/>
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/close"
+            android:id="@+id/close"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="5dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arial"
+            android:textSize="12dp"
+            android:textColor="#666"
+            android:text="@string/name_lbl"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arial"
+            android:textSize="12dp"
+            android:id="@+id/name"
+            android:layout_marginStart="10dp"
+            android:textColor="#232425"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="5dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arial"
+            android:textSize="12dp"
+            android:textColor="#666"
+            android:text="@string/type_lbl"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arial"
+            android:textSize="12dp"
+            android:id="@+id/type"
+            android:layout_marginStart="10dp"
+            android:textColor="#232425"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arial"
+            android:textSize="12dp"
+            android:textColor="#666"
+            android:text="@string/book_date_lbl"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arial"
+            android:textSize="12dp"
+            android:id="@+id/date"
+            android:layout_marginStart="10dp"
+            android:textColor="#232425"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"
+        android:id="@+id/status_wrp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arial"
+            android:textSize="12dp"
+            android:textColor="#666"
+            android:text="@string/status_lbl"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arial"
+            android:textSize="12dp"
+            android:id="@+id/status"
+            android:layout_marginStart="10dp"
+            android:textColor="#232425"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:id="@+id/branch_wrp"
+        android:visibility="gone"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arial"
+            android:textSize="12dp"
+            android:textColor="#666"
+            android:text="@string/branch_lbl"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arial"
+            android:textSize="12dp"
+            android:id="@+id/branch"
+            android:layout_marginStart="10dp"
+            android:textColor="#232425"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"
+        android:id="@+id/extra_wrp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arial"
+            android:textSize="12dp"
+            android:textColor="#666"
+            android:text="@string/extra_lbl"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arial"
+            android:textSize="12dp"
+            android:id="@+id/extra"
+            android:layout_marginStart="10dp"
+            android:textColor="#232425"/>
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="37dp"
+        android:fontFamily="@font/arial"
+        android:textSize="14dp"
+        android:textAllCaps="false"
+        android:background="@drawable/standard_btn"
+        android:textColor="#fff"
+        android:id="@+id/cancel_btn"
+        android:text="@string/cancel_btn"
+        android:layout_marginTop="15dp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="37dp"
+        android:fontFamily="@font/arial"
+        android:textSize="14dp"
+        android:id="@+id/done_btn"
+        android:textAllCaps="false"
+        android:background="@drawable/standard_btn"
+        android:textColor="#fff"
+        android:text="@string/done_btn"
+        android:layout_marginTop="10dp"/>
+
+</LinearLayout>

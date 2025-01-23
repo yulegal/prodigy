@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:padding="10dp"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="5dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arialbd"
+            android:textSize="15dp"
+            android:textColor="#232425"
+            android:text="@string/add_user_title"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/close"
+            android:id="@+id/close"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/arial"
+        android:textSize="12dp"
+        android:textColor="#666"
+        android:text="@string/add_user_info"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/text_wrp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/standard_input"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arial"
+            android:textSize="13dp"
+            android:textColor="#666"
+            android:text="+996"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="#999"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arial"
+            android:textSize="13dp"
+            android:textColor="#232425"
+            android:textColorHint="#666"
+            android:hint="@string/phone_number_hint"
+            android:background="@drawable/standard_input"
+            android:layout_weight="1"
+            android:digits="0123456789"
+            android:maxLength="9"
+            android:id="@+id/number"
+            android:inputType="number"/>
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:textAllCaps="false"
+        android:id="@+id/button"
+        android:fontFamily="@font/arial"
+        android:background="@drawable/standard_btn"
+        android:textSize="15dp"
+        android:textColor="#fff"
+        android:text="@string/add_btn"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/arial"
+        android:textColor="#ff0000"
+        android:id="@+id/error"
+        android:background="@android:color/transparent"
+        android:textSize="13dp"
+        android:visibility="gone"
+        android:gravity="center"/>
+
+    <pl.droidsonroids.gif.GifImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/loader"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"
+        android:id="@+id/loader"
+        android:layout_gravity="center_horizontal"/>
+
+</LinearLayout>

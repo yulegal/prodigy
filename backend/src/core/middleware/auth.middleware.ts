@@ -1,0 +1,36 @@
+import {
+  Inject,
+  Injectable,
+  NestMiddleware,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { NextFunction, Response } from 'express';
+
+@Injectable()
+export class AuthMiddleware implements NestMiddleware {
+  constructor(
+    @Inject(ConfigService)
+    private readonly configService: ConfigService,
+    @Inject(JwtService)
+    private readonly jwtService: JwtService,
+  ) {}
+
+  async use(req: any, res: Response, next: NextFunction) {
+    const authorization =
+      req.headers['Authorization'] || req.headers['authorization'];
+    if (!authorization) throw new UnauthorizedException();
+    const token = authorization.split(' ')[1];
+    if (!token) throw new UnauthorizedException();
+    try {
+      const user = await this.jwtService.verifyAsync(token, {
+        secret: this.configService.get<string>('SECRET_KEY'),
+      });
+      req.user = user;
+      next();
+    } catch (e) {
+      throw new UnauthorizedException();
+    }
+  }
+}

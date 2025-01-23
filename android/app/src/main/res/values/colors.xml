@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="main_bg">#fff</color>
+    <color name="cb_color">#369</color>
+    <color name="current_schedule_bg">#25292e</color>
+    <color name="main_dark">#25292e</color>
+</resources>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/arialbd"
+            android:textSize="16dp"
+            android:textColor="#232425"
+            android:text="@string/filter_title"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/close"
+            android:id="@+id/close"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/standard_input"
+        android:gravity="center_vertical">
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="35dp"
+            android:fontFamily="@font/arial"
+            android:textSize="13dp"
+            android:textColor="#232425"
+            android:textColorHint="#666"
+            android:paddingStart="10dp"
+            android:id="@+id/date_from"
+            android:enabled="false"
+            android:hint="@string/date_from_hint"
+            android:background="@drawable/standard_input"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/date"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="5dp"
+            android:id="@+id/select_date_from_btn"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/standard_input"
+        android:gravity="center_vertical">
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="35dp"
+            android:fontFamily="@font/arial"
+            android:textSize="13dp"
+            android:textColor="#232425"
+            android:textColorHint="#666"
+            android:paddingStart="10dp"
+            android:id="@+id/date_to"
+            android:enabled="false"
+            android:hint="@string/date_to_hint"
+            android:background="@drawable/standard_input"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/date"
+            android:id="@+id/select_date_to_btn"/>
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:textColor="#fff"
+        android:visibility="gone"
+        android:fontFamily="@font/arial"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/standard_btn"
+        android:id="@+id/clear"
+        android:textSize="15dp"
+        android:text="@string/clear_filter_btn"
+        android:textAllCaps="false" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:textColor="#fff"
+        android:fontFamily="@font/arial"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/standard_btn"
+        android:id="@+id/button"
+        android:textSize="15dp"
+        android:text="@string/use_filter_btn"
+        android:textAllCaps="false" />
+
+</LinearLayout>

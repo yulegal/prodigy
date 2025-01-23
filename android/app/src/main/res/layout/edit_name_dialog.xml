@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arialbd"
+            android:textSize="15dp"
+            android:layout_weight="1"
+            android:textColor="#232425"
+            android:text="@string/edit_name_title"/>
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/close"
+            android:id="@+id/close"/>
+
+    </LinearLayout>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:hint="@string/name_hint"
+        android:singleLine="true"
+        android:fontFamily="@font/arial"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:id="@+id/name"
+        android:textSize="13dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/standard_input"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="37dp"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:id="@+id/button"
+        android:textAllCaps="false"
+        android:fontFamily="@font/arial"
+        android:textColor="#fff"
+        android:textSize="15dp"
+        android:text="@string/save"
+        android:background="@drawable/standard_btn"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/arial"
+        android:textSize="13dp"
+        android:textColor="#ff0000"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"
+        android:id="@+id/error"/>
+
+</LinearLayout>

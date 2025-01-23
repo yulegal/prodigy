@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EditText
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="41dp"
+    android:layout_height="50dp"
+    android:fontFamily="@font/arial"
+    android:textColor="#232425"
+    android:maxLength="1"
+    android:digits="0123456789"
+    android:selectAllOnFocus="true"
+    android:inputType="number"
+    android:gravity="center"
+    android:background="@drawable/auth_input_wrp"
+    android:textSize="14dp"
+    android:id="@+id/num6"/>

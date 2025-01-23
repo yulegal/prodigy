@@ -1,0 +1,15 @@
+export const error_user_not_found = 'error_user_not_found';
+export const error_category_not_found = 'error_category_not_found';
+export const error_service_not_found = 'error_service_not_found';
+export const error_branch_not_found = 'error_branch_not_found';
+export const error_invalid_book_time = 'error_invalid_book_time';
+export const error_booking_date_busy = 'error_booking_date_busy';
+export const error_booking_not_found = 'error_booking_not_found';
+export const error_lack_input_data = 'error_lack_input_data';
+export const error_user_add_branch_forbidden = 'error_user_add_branch_forbidden';
+export const error_photo_not_found = 'error_photo_not_found';
+export const error_notification_not_found = 'error_notification_not_found';
+export const error_empty_bookings = 'error_empty_bookings';
+export const error_message_not_found = 'error_message_not_found';
+export const error_empty_messages = 'error_empty_messages';
+export const error_chat_not_found = 'error_chat_not_found';

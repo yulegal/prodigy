@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:title="@string/categories_title"
+        android:id="@+id/categories"
+        app:showAsAction="always"
+        android:icon="@drawable/category"/>
+    <item
+        android:title="@string/notifications_title"
+        android:id="@+id/notifications"
+        app:showAsAction="always"
+        android:icon="@drawable/notifications"/>
+    <item
+        android:title="@string/profile_title"
+        android:id="@+id/profile"
+        app:showAsAction="always"
+        android:icon="@drawable/profile"/>
+</menu>

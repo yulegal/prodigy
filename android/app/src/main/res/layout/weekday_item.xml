@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:padding="10dp"
+    android:gravity="center_vertical"
+    android:background="@drawable/weekday_item"
+    android:layout_marginBottom="10dp"
+    android:layout_height="wrap_content">
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:buttonTint="@color/cb_color"
+        android:background="@android:color/transparent"
+        android:layout_height="wrap_content"
+        android:id="@+id/cb"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="10dp"
+        android:background="@android:color/transparent"
+        android:layout_marginEnd="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arial"
+            android:background="@android:color/transparent"
+            android:textSize="14dp"
+            android:text="Monday"
+            android:id="@+id/name"
+            android:textColor="#232425"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#666"
+            android:id="@+id/time"
+            android:visibility="gone"
+            android:fontFamily="@font/arial"
+            android:background="@android:color/transparent"
+            android:textSize="11dp"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="20dp"
+        android:background="@android:color/transparent"
+        android:layout_height="20dp"
+        android:id="@+id/all_day"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/watch"/>
+
+    <ImageView
+        android:layout_width="20dp"
+        android:background="@android:color/transparent"
+        android:layout_height="20dp"
+        android:id="@+id/time_icon"
+        android:src="@drawable/time"/>
+
+</LinearLayout>

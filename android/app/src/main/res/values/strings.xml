@@ -1,0 +1,239 @@
+<resources>
+    <string name="app_name">Prodigy</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="type_haircut">Haircut</string>
+    <string name="type_cafe">Cafe</string>
+    <string name="end_time_title">End time</string>
+    <string name="start_time_title">Start time</string>
+    <string name="all_day">All day</string>
+    <string name="work_schedule_title">Work Schedule</string>
+    <string-array name="week_days">
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+    </string-array>
+    <string name="start_end_time_wrong">End time can not be earlier than start time</string>
+    <string name="home_title">Home</string>
+    <string name="favorites_title">Favorites</string>
+    <string name="history_title">History</string>
+    <string name="bookings_title">Bookings</string>
+    <string name="error_has_occurred">An error has occurred</string>
+    <string name="profile_title">Profile</string>
+    <string name="notifications_title">Notifications</string>
+    <string name="search_hint">Search....</string>
+    <string name="categories_title">Categories</string>
+    <string name="empty_services">No services to show</string>
+    <string name="type_lbl">Type:</string>
+    <string name="goto_home">Go to home</string>
+    <string name="login_title">Login</string>
+    <string name="login_hint">Phone number....</string>
+    <string name="continue_btn">Continue</string>
+    <string name="confirm_number_title">Confirm verification code</string>
+    <string name="enter_confirm_number_lbl">Enter verification code from sms</string>
+    <string name="confirm_button">Confirm</string>
+    <string name="incorrect_code">Incorrect verification code</string>
+    <string name="login_confirm_title">Is this correct number?</string>
+    <string name="name_hint">Name....</string>
+    <string name="upload_photo">Upload photo</string>
+    <string name="register_button">Register</string>
+    <string name="remove_photo">Remove photo</string>
+    <string name="fill_name_error">Fill in the name</string>
+    <string name="logout_title">Log out</string>
+    <string name="contact_with_us">Contact with us</string>
+    <string name="settings_title">Settings</string>
+    <string name="logout_confirm_title">Log out</string>
+    <string name="logout_confirm_body">Are you sure you want to log out?</string>
+    <string name="logout_success">Logged out successfully</string>
+    <string name="edit_name_title">Edit name</string>
+    <string name="save">Save</string>
+    <string name="saved">Saved</string>
+    <string name="removed">Removed</string>
+    <string name="remove_avatar_confirm_body">Are you sure you want to removed avatar?</string>
+    <string name="remove_avatar_confirm_title">Remove avatar</string>
+    <string name="services_title">Services</string>
+    <string name="broadcast_title">Broadcast</string>
+    <string name="provider_title">Provider</string>
+    <string name="common_menu_title">Common</string>
+    <string name="for_provider_title">For providers</string>
+    <string name="for_helpers_title">For helpers</string>
+    <string name="branches_title">Branches</string>
+    <string name="privacy_title">Privacy</string>
+    <string name="pricing">Pricing</string>
+    <string name="support_title">Support</string>
+    <string name="terms_title">Terms of use</string>
+    <string name="new_service_title">New service</string>
+    <string name="address_hint">Address....</string>
+    <string name="average_session_hint">Average session....</string>
+    <string name="session_unit_minutes">Minutes</string>
+    <string name="session_unit_hours">Hours</string>
+    <string name="create_service_btn">Create service</string>
+    <string name="extra_title">Extra</string>
+    <string name="add_branches_btn">Add branches</string>
+    <string name="gallery_btn">Gallery</string>
+    <string name="work_schedule_btn">Work schedule</string>
+    <string name="update_service_btn">Update service</string>
+    <string name="add_address_title">Add address</string>
+    <string name="address_url_hint">2gis url(Optional)....</string>
+    <string name="fill_in_all_fields">Fill in all the fields</string>
+    <string name="invalid_url">Invalid url</string>
+    <string name="empty_branches">No branches to show</string>
+    <string name="remove_branch_confirm_title">Remove branch</string>
+    <string name="add_btn">Add</string>
+    <string name="service_info_title">Service info</string>
+    <string name="seats_hint">Seats for a table</string>
+    <string name="remove_branch_confirm_body">Are you sure you want to remove this branch></string>
+    <string name="cafe_extra_info">Please specify how many tables and seats for each table you have</string>
+    <string name="add_table_btn">Add table</string>
+    <string name="service_created">Created service</string>
+    <string name="service_updated">Updated service</string>
+    <string name="error_select_weekday">Select at least one day</string>
+    <string name="error_specify_table">Please specify information about tables</string>
+    <string name="become_provider_confirm_body">This action will make you a provider, are you sure you want to continue?</string>
+    <string name="become_provider_confirm_title">Become a provider</string>
+    <string name="trial_period_notify">This service is on the trial period which ends on %1$s</string>
+    <string name="payment_period_notify">The payment period ends on %1$s</string>
+    <string name="service_blocked">This service is blocked and is not visible to other users. Check out your balance</string>
+    <string name="add_branch_title">New branch</string>
+    <string name="users_title">Users</string>
+    <string name="add_users_btn">Add users</string>
+    <string name="create_branch_btn">Create branch</string>
+    <string name="error_user_not_found">Such user does not exist</string>
+    <string name="select_user_error">Select at least one user</string>
+    <string name="error_user_add_branch_forbidden">The user %1$s can not be added</string>
+    <string name="updated_branch">Branch updated</string>
+    <string name="created_branch">Branch created</string>
+    <string name="update_branch_btn">Update branch</string>
+    <string name="branch_info_title">Branch info</string>
+    <string name="add_user_title">Add user</string>
+    <string name="add_user_info">Please enter users phone number you wish to add</string>
+    <string name="phone_number_hint">Phone number....</string>
+    <string name="fill_in_the_number">Fill in the number</string>
+    <string name="rating_lbl">Rating:</string>
+    <string name="address_title">Address</string>
+    <string name="average_session_title">Average session</string>
+    <string name="booking_title">Booking</string>
+    <string name="select_date_btn">Select date</string>
+    <string name="select_time_btn">Select time</string>
+    <string name="select_branch_btn">Select branch</string>
+    <string name="booked_title">Bookings for today</string>
+    <string name="gallery_title">Gallery</string>
+    <string name="book_btn">Book</string>
+    <string name="invalid_time">Invalid time</string>
+    <string name="book_date">Book date</string>
+    <string name="invalid_book_time">Invalid booking time</string>
+    <string name="book_date_is_busy">This book date is busy</string>
+    <string name="time_lbl">Time:</string>
+    <string name="booking_status_active">Active</string>
+    <string name="booking_status_canceled">Canceled</string>
+    <string name="booking_status_done">Done</string>
+    <string name="rate_dialog_title">Rate</string>
+    <string name="rate_btn">Rate</string>
+    <string name="thanks_for_rating">Thanks for your rating</string>
+    <string name="select_booking_date">Select booking date and time</string>
+    <string name="booked_msg">Booked successfully</string>
+    <string name="successfully_rebooked">Successfully rebooked</string>
+    <string name="removed_from_favorites">Removed from favorites</string>
+    <string name="added_to_favorites">Added to favorites</string>
+    <string name="select_table_option">Select table</string>
+    <string name="table">Table %1$d - %2$d seats</string>
+    <string name="rebook_btn">Rebook</string>
+    <string name="fill_in_the_amount">Fill in the amount</string>
+    <string name="custom_seats_title">Custom seats</string>
+    <string name="custom_seats_hint">Enter the amount of seats you need....</string>
+    <string name="custom_seats">Custom seats</string>
+    <string name="delete_photo_confirm_body">Are you sure you want to delete photo?</string>
+    <string name="delete_photo_confirm_title">Delete photo</string>
+    <string name="uploaded_successfully">Uploaded successfully</string>
+    <string name="empty_gallery">The gallery is empty</string>
+    <string name="empty_bookings">No bookings to show</string>
+    <string-array name="booking_types">
+        <item>My bookings</item>
+        <item>Bookings from clients</item>
+    </string-array>
+    <string name="filter_title">Filter</string>
+    <string name="date_to_hint">Date to....</string>
+    <string name="date_from_hint">Date from....</string>
+    <string name="clear_filter_btn">Clear filter</string>
+    <string name="use_filter_btn">Use filters</string>
+    <string name="invalid_date">Invalid date</string>
+    <string name="booking_info_title">Booking info</string>
+    <string name="book_date_lbl">Book date</string>
+    <string name="branch_lbl">Branch:</string>
+    <string name="extra_lbl">Exra:</string>
+    <string name="name_lbl">Name:</string>
+    <string name="cancel_btn">Cancel</string>
+    <string name="done_btn">Done</string>
+    <string name="booking_canceled">The booking has been canceled</string>
+    <string name="finished_booking">The booking has been finished</string>
+    <string name="booking_cancel_confirm_title">Cancel of booking</string>
+    <string name="booking_cancel_confirm_body">Are you sure you want to cancel this booking?</string>
+    <string name="booking_done_confirm_title">Finish of booking</string>
+    <string name="booking_done_confirm_body">Are you sure you want to finish this booking?</string>
+    <string name="date_lbl">Date:</string>
+    <string name="status_lbl">Status:</string>
+    <string name="option_delete">Delete</string>
+    <string name="favorites_remove_confirm_title">Remove from favorites</string>
+    <string name="favorites_remove_confirm_body">Are you sure you want to remove from favorites?</string>
+    <string name="empty_favorites">No favorites to show</string>
+    <string name="empty_notifications">No notifications to show</string>
+    <string name="you_must_be_provider">You must be a provider</string>
+    <string name="date_hint">Date....</string>
+    <string name="message_hint">Message....</string>
+    <string name="broadcast_btn">Broadcast</string>
+    <string-array name="broadcast_actions">
+        <item>Action</item>
+        <item>Cancel bookings</item>
+    </string-array>
+    <string name="select_branch_option">Select branch</string>
+    <string name="error_empty_bookings">You don\'t have any bookings for this date</string>
+    <string name="broadcast_done">Broadcasted</string>
+    <string name="you_must_be_helper">You must be a helper</string>
+    <string name="chats_title">Chats</string>
+    <string name="my_contacts_title">My contacts</string>
+    <string name="empty_contacts">No contacts to show</string>
+    <string name="need_contact_access">Access to your contacts is required</string>
+    <string name="give_permission">Give permission</string>
+    <string name="select_files_title">Select files</string>
+    <string name="back">Back</string>
+    <string name="close">Close</string>
+    <string name="you">You</string>
+    <string name="empty_chats">No chats to show</string>
+    <string name="photos">Photos</string>
+    <string-array name="months">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="delete_message_confirm_title">Delete message</string>
+    <string name="delete_message_confirm_body">Are you sure you want to delete this message?</string>
+    <string name="message_deleted">Message deleted</string>
+    <string name="online_status">Online</string>
+    <string name="new_message_title">New message</string>
+    <string name="search_contact_hint">Search contact....</string>
+    <string name="chat_option_delete">Delete</string>
+    <string name="remove_chat_confirm_body">Are you sure you want to remove this chat?</string>
+    <string name="remove_chat_confirm_title">Remove chat</string>
+    <string name="deleted">Deleted</string>
+    <string name="select_contact_title">Select contact</string>
+    <string name="cannot_forward_same_contact">Can not forward to the same contact</string>
+    <string name="forwarded_from">Forwarded from</string>
+    <string name="edited">edited</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
