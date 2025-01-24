@@ -184,10 +184,9 @@ public class ChatsFragment extends BaseExtraFragment {
                     activity.getSupportFragmentManager().popBackStack();
                     page = 1;
                     chats = null;
-                    initSockets();
+                    rv.setAdapter(null);
                     load();
                 });
-                finishSockets();
                 activity.loadExtra(fragment, true);
             });
             return holder;
@@ -382,6 +381,7 @@ public class ChatsFragment extends BaseExtraFragment {
         builder.setResponseListener(new ApiBuilder.ResponseListener<FilterResponse<ChatModel>>() {
             @Override
             public void onResponse(Call<FilterResponse<ChatModel>> call, Response<FilterResponse<ChatModel>> response) {
+                Log.i("code", String.valueOf(response.code()));
                 if(response.code() == 201) {
                     total = response.body().getCount();
                     loader.setVisibility(View.GONE);
@@ -422,7 +422,6 @@ public class ChatsFragment extends BaseExtraFragment {
 
     @Override
     public void onStop() {
-        Log.i("stop", "sd");
         finishSockets();
         super.onStop();
     }

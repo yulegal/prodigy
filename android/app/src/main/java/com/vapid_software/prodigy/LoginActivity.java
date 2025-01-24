@@ -3,6 +3,7 @@ package com.vapid_software.prodigy;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -101,12 +102,15 @@ public class LoginActivity extends AppCompatActivity {
                     else {
                         Toast.makeText(context, context.getResources().getString(R.string.error_has_occurred), Toast.LENGTH_LONG).show();
                     }
-                    clickable = true;
+                    confirmDialog.dismiss();
                 }
             });
             builder.setOnInitializedListener(() -> {
                 builder.send(builder.getApi(ApiService.class).login(new LoginModel(loginValue)));
             });
+        });
+        confirmDialog.setOnDismissListener((DialogInterface dialog) -> {
+            clickable = true;
         });
         confirmDialog.show();
     };

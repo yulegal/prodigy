@@ -81,7 +81,7 @@ public class ChatFragment extends BaseExtraFragment {
     private final static int LIMIT = 20;
     private View optionsWrp, bottomWrp, topMainWrp, topOptionsWrp, topOptionsClose;
     private MessageModel replyMessage;
-    private View optionsDelete, optionsForward, optionsReply, optionsEmoji, optionsEdit, optionsEditWrp;
+    private View optionsDeleteWrp, optionsDelete, optionsForward, optionsReply, optionsEmoji, optionsEdit, optionsEditWrp;
     private TextView replyName, replyBody, currentDate;
     private final static int SWIPE_ANIMATION_OFFSET = 100;
     private final static int SWIPE_ANIMATION_DURATION = 100;
@@ -270,7 +270,7 @@ public class ChatFragment extends BaseExtraFragment {
                     @Override
                     public void onSwipeRight() {
                         if(messages.get(getAdapterPosition()).getFrom().getId().equals(currentUser.getId())) {
-                            ObjectAnimator animator = ObjectAnimator.ofFloat(getAdapterPosition(), "translationX", SWIPE_ANIMATION_OFFSET);
+                            ObjectAnimator animator = ObjectAnimator.ofFloat(getBox(), "translationX", SWIPE_ANIMATION_OFFSET);
                             animator.addListener(new Animator.AnimatorListener() {
                                 @Override
                                 public void onAnimationStart(@NonNull Animator animation) {
@@ -325,10 +325,12 @@ public class ChatFragment extends BaseExtraFragment {
 
                     @Override
                     public void onLongPress(View v) {
-                        optionsMessagePosition = getAdapterPosition();
-                        showMessageOptions();
+                        if(onSwipeTouchListener != null) {
+                            onSwipeTouchListener.onLongPress(v);
+                        }
                     }
                 });
+                mediaRv.setOnTouchListener(onSwipeTouchListener);
                 container.setOnTouchListener(onSwipeTouchListener);
             }
 
@@ -433,10 +435,11 @@ public class ChatFragment extends BaseExtraFragment {
             else if(message.getFrom().getId().equals(currentUser.getId()) && currentUser.getIcon() != null) {
                 Picasso.get().load(String.join("/", ApiBuilder.PUBLIC_PATH, currentUser.getIcon())).into(holder.getAvatar());
             }
+            else {
+                holder.getAvatar().setImageResource(R.drawable.avatar);
+            }
             if(message.getAddons() != null) {
-                if(holder.getMediaRv().getLayoutManager() == null) {
-                    holder.getMediaRv().setLayoutManager(message.getAddons().size() > 1 ? new GridLayoutManager(getContext(), 2) : new LinearLayoutManager(getContext()));
-                }
+                holder.getMediaRv().setLayoutManager(message.getAddons().size() > 1 ? new GridLayoutManager(getContext(), 2) : new LinearLayoutManager(getContext()));
                 MediaAdapter adapter = new MediaAdapter(message.getAddons(), holder.getAdapterPosition());
                 adapter.setOnSwipeTouchListener(onSwipeTouchListener);
                 holder.getMediaRv().setAdapter(adapter);
@@ -496,6 +499,11 @@ public class ChatFragment extends BaseExtraFragment {
             MessageModel message = messages.get(optionsMessagePosition);
             if(!message.getFrom().getId().equals(loggedUser.getId())) {
                 optionsEditWrp.setVisibility(View.GONE);
+                optionsDeleteWrp.setVisibility(View.GONE);
+            }
+            else {
+                optionsDeleteWrp.setVisibility(View.VISIBLE);
+                optionsEditWrp.setVisibility(View.VISIBLE);
             }
             notifyItemChanged(optionsMessagePosition);
         }
@@ -1259,6 +1267,14 @@ public class ChatFragment extends BaseExtraFragment {
     private View.OnClickListener buttonDownClicked = (View v) -> {
         if(messages.size() != 0) {
             rv.scrollToPosition(messages.size() - 1);
+            for(int i = messages.size() - 1;i >= 0; --i) {
+                MessageModel message = messages.get(i);
+                if(!message.getTo().getId().equals(loggedUser.getId())) continue;
+                if(message.isRead()) break;
+                message.setRead(true);
+                socket.emit(Defs.WS_MESSAGES.CLIENT.MESSAGE_READ, message.getId());
+            }
+            newCount.setText("");
         }
     };
 
@@ -1290,6 +1306,7 @@ public class ChatFragment extends BaseExtraFragment {
         mediaWrp = root.findViewById(R.id.media_wrapper);
         optionsDelete = root.findViewById(R.id.options_delete);
         optionsForward = root.findViewById(R.id.options_forward);
+        optionsDeleteWrp = root.findViewById(R.id.options_delete_wrp);
         optionsEmoji = root.findViewById(R.id.options_emoji);
         optionsReply = root.findViewById(R.id.options_reply);
         rv = root.findViewById(R.id.rv);
@@ -1321,7 +1338,7 @@ public class ChatFragment extends BaseExtraFragment {
                     buttonDown.setVisibility(View.VISIBLE);
                     int pos = ((LinearLayoutManager) rv.getLayoutManager()).findFirstVisibleItemPosition();
                     int endPos = ((LinearLayoutManager) rv.getLayoutManager()).findLastVisibleItemPosition();
-                    int total = 0;
+                    int unreadCount = 0;
                     if(pos != RecyclerView.NO_POSITION) {
                         for(int i = pos; i < messages.size(); ++i) {
                             MessageModel message = messages.get(i);
@@ -1332,13 +1349,13 @@ public class ChatFragment extends BaseExtraFragment {
                                         socket.emit(Defs.WS_MESSAGES.CLIENT.MESSAGE_READ, message.getId());
                                     }
                                     else {
-                                        ++total;
+                                        ++unreadCount;
                                     }
                                 }
                             }
                         }
                     }
-                    newCount.setText(total == 0 ? "" : String.valueOf(total));
+                    newCount.setText(unreadCount == 0 ? "" : String.valueOf(unreadCount));
                 }
                 else {
                     buttonDown.setVisibility(View.GONE);
