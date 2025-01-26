@@ -15,6 +15,7 @@ import { MessageCreateDto, MessageForwardDto, MessageUpdateDto } from './dto';
 import { User } from '@/core/decorators/user.decorator';
 import { UserDto } from '../user/dto';
 import { FilterQueryOptions } from '@/core/dto';
+import { BaseData } from '@shared/interfaces';
 
 @Controller({
   path: 'message',
@@ -62,5 +63,10 @@ export class MessageController {
   @Post('forward')
   async forward(@Body() dto: MessageForwardDto, @User() user: UserDto) {
     return this.service.forward(dto, user);
+  }
+
+  @Post('toggle-rating')
+  async toggleRating(@Body() dto: BaseData, @User() user: UserDto) {
+    return this.service.toggleRating(dto, user);
   }
 }

@@ -45,11 +45,11 @@
 
         </LinearLayout>
 
-        <fragment
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:id="@+id/search_fragment"
-            android:name="com.vapid_software.prodigy.fragments.SearchFragment"/>
+<!--        <fragment-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:id="@+id/search_fragment"-->
+<!--            android:name="com.vapid_software.prodigy.fragments.SearchFragment"/>-->
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"

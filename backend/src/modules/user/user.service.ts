@@ -283,4 +283,23 @@ export class UserService {
     await this.socketService.notifyUserOnline(user, ids);
     this.logger.log(`${UserService.name} handleUserOnline end`);
   }
+
+  @OnEvent(EVENTS.USER_LOGGED_OUT)
+  async logout(clientId: string, user: UserDto) {
+    this.logger.log(`${UserService.name} logout start`);
+    const contacts = await this.contactRepo.find({
+      where: {
+        contact: {
+          id: user.id,
+        },
+      },
+      relations: CONTACT_RELATIONS,
+    });
+    await this.socketService.notifyUserLoggedOut(
+      contacts.map((v) => v.user.id),
+      user.id,
+      clientId,
+    );
+    this.logger.log(`${UserService.name} logout end`);
+  }
 }

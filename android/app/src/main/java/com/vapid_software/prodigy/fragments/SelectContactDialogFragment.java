@@ -2,6 +2,7 @@ package com.vapid_software.prodigy.fragments;
 
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,8 @@ public class SelectContactDialogFragment extends BaseExtraFragment {
     private int page = 1;
     private int total;
     private List<UserModel> contacts;
-    private String title;
+    private String title, searchText;
+    private SearchFragment searchFragment;
     private TextView titleView;
     private OnContactSelectedListener onContactSelectedListener;
     private final static int LIMIT = 20;
@@ -62,17 +64,29 @@ public class SelectContactDialogFragment extends BaseExtraFragment {
         return root;
     }
 
+    private SearchFragment.OnSearchChangeListener onSearchChangeListener = (String text) -> {
+        searchText = text;
+        page = 1;
+        contacts = null;
+        load();
+    };
+
     @Override
     protected void init() {
         super.init();
+        searchFragment = (SearchFragment) getChildFragmentManager().findFragmentById(R.id.search_fragment);
         if(title != null) {
             titleView.setText(title);
         }
+        searchFragment.setOnSearchChangeListener(onSearchChangeListener);
         load();
     }
 
     private FilterQueryOptions getFilterQueryOptions() {
         List<FilterItem> items = new ArrayList<>();
+        if(searchText != null) {
+            items.add(new FilterItem("name", searchText));
+        }
         return new FilterQueryOptions(page, LIMIT, items);
     }
 
@@ -98,7 +112,7 @@ public class SelectContactDialogFragment extends BaseExtraFragment {
                         if(rv.getLayoutManager() == null) {
                             rv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
                         }
-                        if(rv.getAdapter() == null) {
+                        if(rv.getAdapter() == null || page == 1) {
                             ContactAdapter adapter = new ContactAdapter(contacts);
                             adapter.setOnContactClickedListener((UserModel contact) -> {
                                 if(onContactSelectedListener != null) {

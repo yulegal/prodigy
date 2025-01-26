@@ -64,6 +64,11 @@ export interface IFile {
 	base64: string;
 }
 
+export interface BaseData {
+    id: string;
+    name: string;
+}
+
 export enum SessionUnit {
     HOURS = 'hours',
     MINUTES = 'minutes',

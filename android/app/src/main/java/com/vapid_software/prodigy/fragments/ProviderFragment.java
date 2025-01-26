@@ -14,7 +14,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,8 +47,6 @@ import com.vapid_software.prodigy.models.AddressModel;
 import com.vapid_software.prodigy.models.CategoryModel;
 import com.vapid_software.prodigy.models.ServiceModel;
 import com.vapid_software.prodigy.models.WorkScheduleModel;
-
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -154,6 +151,9 @@ public class ProviderFragment extends BaseExtraFragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode == Defs.PermissionCode.GALLERY_CODE && grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             selectImage();
+        }
+        else if(requestCode == Defs.PermissionCode.LOCATION_CODE) {
+            selectAddress();
         }
     }
 
@@ -333,12 +333,12 @@ public class ProviderFragment extends BaseExtraFragment {
         activity.loadExtra(fragment, true);
     };
     private View.OnClickListener addAddressClicked = (View v) -> {
-        AddAddressDialog dialog = new AddAddressDialog(getContext(), addUrl);
-        dialog.setOnAddressAddedListener((MetaData metaData, AddressModel model) -> {
-            address.setText(model.getAddress());
-            addUrl = model;
-        });
-        dialog.show();
+        if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, Defs.PermissionCode.LOCATION_CODE);
+        }
+        else {
+            selectAddress();
+        }
     };
     private View.OnClickListener addBranchesBtnClicked = (View v) -> {
         BranchesFragment fragment = new BranchesFragment();
@@ -348,6 +348,14 @@ public class ProviderFragment extends BaseExtraFragment {
         });
         activity.loadExtra(fragment, true);
     };
+    private void selectAddress() {
+        AddAddressDialog dialog = new AddAddressDialog(getContext(), addUrl);
+        dialog.setOnAddressAddedListener((MetaData metaData, AddressModel model) -> {
+            address.setText(model.getAddress());
+            addUrl = model;
+        });
+        dialog.show();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

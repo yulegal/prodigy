@@ -71,8 +71,11 @@ export class WsGateway
   @SubscribeMessage(WS_MESSAGES.CLIENT.LOGOUT)
   async logout(@ConnectedSocket() client: Socket) {
     this.logger.log(`Client logged out: ${client.id}`);
+    const user = await this.redisClientService.get(
+      REDIS_NAMESPACE.WS + client.id,
+    );
     await this.redisClientService.del(REDIS_NAMESPACE.WS + client.id);
-    this.emitter.emit(EVENTS.USER_LOGGED_OUT, client.id);
+    this.emitter.emit(EVENTS.USER_LOGGED_OUT, client.id, user);
   }
 
   @SubscribeMessage(WS_MESSAGES.CLIENT.MESSAGE_READ)
@@ -80,6 +83,16 @@ export class WsGateway
     this.logger.log(`${WsGateway.name} messageRead start`);
     this.emitter.emit(EVENTS.MESSAGE_READ, id);
     this.logger.log(`${WsGateway.name} messageRead end`);
+  }
+
+  @SubscribeMessage(WS_MESSAGES.CLIENT.MESSAGE_RATED)
+  async rated(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
+    this.logger.log(`${WsGateway.name} rated start`);
+    const user = await this.redisClientService.get(
+      REDIS_NAMESPACE.WS + client.id,
+    );
+    this.emitter.emit(EVENTS.MESSAGE_RATED, JSON.parse(data), user);
+    this.logger.log(`${WsGateway.name} rated end`);
   }
 
   @SubscribeMessage(WS_MESSAGES.CLIENT.CHECK_USER_ONLINE)

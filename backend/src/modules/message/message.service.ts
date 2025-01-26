@@ -22,7 +22,8 @@ import { getPageableData } from '@/core/db-extension';
 import { OnEvent } from '@nestjs/event-emitter';
 import { SocketService } from '@/core/socket/socket.service';
 import { copyFileSync } from 'fs';
-import { Direction } from '@shared/interfaces';
+import { BaseData, Direction } from '@shared/interfaces';
+import { MessageRatingEntity } from '@/entities/MessageRatingEntity';
 
 @Injectable()
 export class MessageService {
@@ -37,6 +38,8 @@ export class MessageService {
     @InjectRepository(ChatEntity)
     private readonly chatRepo: Repository<ChatEntity>,
     private readonly socketService: SocketService,
+    @InjectRepository(MessageRatingEntity)
+    private readonly ratingRepo: Repository<MessageRatingEntity>,
   ) {
     this.logger = new Logger(MessageService.name);
   }
@@ -70,6 +73,8 @@ export class MessageService {
         relations: USER_RELATIONS,
       });
       chat = await this.chatRepo.save(chat);
+    } else {
+      chat.updatedAt = new Date();
     }
     const message = new MessageEntity();
     message.from = await this.userRepo.findOne({
@@ -283,5 +288,42 @@ export class MessageService {
     await this.socketService.notifyNewMessage(mapped);
     this.logger.log(`${MessageService.name} forward end`);
     return mapped;
+  }
+
+  async toggleRating(dto: BaseData, currentUser: UserDto) {
+    this.logger.log(`${MessageService.name} toggleRating start`);
+    let rating = await this.ratingRepo.findOne({
+      where: {
+        user: { id: currentUser.id },
+        message: { id: dto.id },
+      },
+    });
+    const result = {
+      action: 0,
+      face: null as null | string,
+    };
+    if (!rating) {
+      rating = new MessageRatingEntity();
+      rating.face = dto.name;
+      rating.user = await this.userRepo.findOne({
+        where: { id: currentUser.id },
+      });
+      rating.message = await this.repo.findOne({
+        where: { id: dto.id },
+      });
+      rating = await this.ratingRepo.save(rating);
+      result.action = 1;
+      result.face = dto.name;
+    } else if (dto.name != rating.face) {
+      rating.face = dto.name;
+      rating = await this.ratingRepo.save(rating);
+      result.action = 1;
+      result.face = dto.name;
+    } else {
+      await this.ratingRepo.remove(rating);
+      result.action = 0;
+    }
+    this.logger.log(`${MessageService.name} toggleRating end`);
+    return result;
   }
 }

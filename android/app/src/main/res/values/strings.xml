@@ -234,6 +234,8 @@
     <string name="cannot_forward_same_contact">Can not forward to the same contact</string>
     <string name="forwarded_from">Forwarded from</string>
     <string name="edited">edited</string>
+    <string name="use_current_location">Use current location</string>
+    <string name="use_current_location_info">This information will be used to help clients see how far they are from your service</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

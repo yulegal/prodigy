@@ -155,6 +155,12 @@
         android:layout_marginEnd="40dp"
         android:layout_marginTop="5dp"
         android:gravity="center_vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/emojis_rv"
+            android:visibility="gone"/>
         
         <TextView
             android:layout_width="wrap_content"

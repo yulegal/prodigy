@@ -33,6 +33,7 @@ android {
 
 dependencies {
     def emojiVersion = "1.0.0-alpha03"
+    implementation 'com.google.android.gms:play-services-location:21.3.0'
     implementation 'com.github.qkopy:richlinkpreview:1.92'
     implementation 'com.github.lincollincol:amplituda:2.2.2'
     implementation 'com.github.massoudss:waveformSeekBar:5.0.2'

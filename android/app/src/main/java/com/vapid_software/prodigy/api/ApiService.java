@@ -1,6 +1,7 @@
 package com.vapid_software.prodigy.api;
 
 
+import com.vapid_software.prodigy.data.BaseData;
 import com.vapid_software.prodigy.helpers.FilterQueryOptions;
 import com.vapid_software.prodigy.helpers.FilterResponse;
 import com.vapid_software.prodigy.models.AuthResponseModel;
@@ -15,6 +16,7 @@ import com.vapid_software.prodigy.models.ChatModel;
 import com.vapid_software.prodigy.models.ForwardMessageModel;
 import com.vapid_software.prodigy.models.LoginModel;
 import com.vapid_software.prodigy.models.MessageModel;
+import com.vapid_software.prodigy.models.MessageRatingResponseModel;
 import com.vapid_software.prodigy.models.NotificationModel;
 import com.vapid_software.prodigy.models.RatingModel;
 import com.vapid_software.prodigy.models.RebookModel;
@@ -166,4 +168,6 @@ public interface ApiService {
     Call<ChatModel> deleteChatById(@Path("id") String id);
     @POST("message/forward")
     Call<MessageModel> forwardMessage(@Body()ForwardMessageModel model);
+    @POST("message/toggle-rating")
+    Call<MessageRatingResponseModel> toggleMessageRating(@Body()BaseData data);
 }

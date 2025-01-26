@@ -1,5 +1,7 @@
 package com.vapid_software.prodigy.models;
 
+import com.vapid_software.prodigy.data.BaseData;
+
 import java.util.List;
 
 public class MessageModel {
@@ -14,6 +16,15 @@ public class MessageModel {
     private UserModel from;
     private UserModel to;
     private boolean edited;
+    private List<BaseData> rating;
+
+    public List<BaseData> getRating() {
+        return rating;
+    }
+
+    public void setRating(List<BaseData> rating) {
+        this.rating = rating;
+    }
 
     public boolean isEdited() {
         return edited;

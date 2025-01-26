@@ -6,13 +6,19 @@ import { MessageEntity } from '@/entities/MessageEntity';
 import { UserEnitity } from '@/entities/UserEntity';
 import { ChatEntity } from '@/entities/ChatEntity';
 import { ConfigModule } from '@/core/config/config.module';
+import { MessageRatingEntity } from '@/entities/MessageRatingEntity';
 
 @Module({
   controllers: [MessageController],
   providers: [MessageService],
   exports: [MessageService],
   imports: [
-    TypeOrmModule.forFeature([MessageEntity, UserEnitity, ChatEntity]),
+    TypeOrmModule.forFeature([
+      MessageEntity,
+      UserEnitity,
+      ChatEntity,
+      MessageRatingEntity,
+    ]),
     ConfigModule,
   ],
 })

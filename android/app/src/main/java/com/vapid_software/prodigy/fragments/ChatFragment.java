@@ -14,6 +14,9 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.emoji2.emojipicker.EmojiPickerView;
+import androidx.emoji2.emojipicker.EmojiViewItem;
+import androidx.emoji2.widget.EmojiTextView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,12 +36,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.vapid_software.prodigy.CoreActivity;
 import com.vapid_software.prodigy.R;
 import com.vapid_software.prodigy.api.ApiBuilder;
 import com.vapid_software.prodigy.api.ApiService;
+import com.vapid_software.prodigy.data.BaseData;
 import com.vapid_software.prodigy.helpers.ConfirmDialog;
 import com.vapid_software.prodigy.helpers.Defs;
 import com.vapid_software.prodigy.helpers.FilterItem;
@@ -46,8 +51,10 @@ import com.vapid_software.prodigy.helpers.FilterQueryOptions;
 import com.vapid_software.prodigy.helpers.FilterResponse;
 import com.vapid_software.prodigy.helpers.OnSwipeTouchListener;
 import com.vapid_software.prodigy.helpers.Utils;
+import com.vapid_software.prodigy.helpers.ViewHolder;
 import com.vapid_software.prodigy.models.ForwardMessageModel;
 import com.vapid_software.prodigy.models.MessageModel;
+import com.vapid_software.prodigy.models.MessageRatingResponseModel;
 import com.vapid_software.prodigy.models.UserModel;
 
 import java.io.File;
@@ -78,18 +85,18 @@ public class ChatFragment extends BaseExtraFragment {
     private int page = 1;
     private int optionsMessagePosition = -1;
     private int total;
-    private final static int LIMIT = 20;
     private View optionsWrp, bottomWrp, topMainWrp, topOptionsWrp, topOptionsClose;
     private MessageModel replyMessage;
     private View optionsDeleteWrp, optionsDelete, optionsForward, optionsReply, optionsEmoji, optionsEdit, optionsEditWrp;
     private TextView replyName, replyBody, currentDate;
     private final static int SWIPE_ANIMATION_OFFSET = 100;
     private final static int SWIPE_ANIMATION_DURATION = 100;
+    private final static int LIMIT = 20;
 
     private class MediaAdapter extends RecyclerView.Adapter {
         private List<String> payload;
         private OnSwipeTouchListener onSwipeTouchListener;
-        private int pos;
+        private int position;
 
         private class CustomViewHolder extends RecyclerView.ViewHolder {
             private ImageView image;
@@ -109,9 +116,9 @@ public class ChatFragment extends BaseExtraFragment {
             }
         }
 
-        public MediaAdapter(List<String> payload, int pos) {
+        public MediaAdapter(List<String> payload, int position) {
             this.payload = payload;
-            this.pos = pos;
+            this.position = position;
         }
 
         @NonNull
@@ -176,6 +183,7 @@ public class ChatFragment extends BaseExtraFragment {
                     mediaWrp.setVisibility(View.GONE);
                 }
             });
+            optionsMessagePosition = position;
             MediaPlayFragment playFragment = new MediaPlayFragment();
             playFragment.setUrlList(payload);
             playFragment.setCurrent(current);
@@ -205,15 +213,40 @@ public class ChatFragment extends BaseExtraFragment {
         }
     }
 
-    private class Adapter extends RecyclerView.Adapter {
+    private class RatingAdapter extends RecyclerView.Adapter {
+        private List<BaseData> ratings;
 
+        public RatingAdapter(List<BaseData> ratings) {
+            this.ratings = ratings;
+        }
+
+        @NonNull
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return new ViewHolder(getLayoutInflater().inflate(R.layout.chat_item_rating, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+            EmojiTextView tv = (EmojiTextView) holder.itemView;
+            BaseData data = ratings.get(holder.getAdapterPosition());
+            tv.setText(data.getName());
+        }
+
+        @Override
+        public int getItemCount() {
+            return ratings.size();
+        }
+    }
+
+    private class Adapter extends RecyclerView.Adapter {
         private class CustomViewHolder extends RecyclerView.ViewHolder {
             private View forwardWrp, container, box;
             private TextView forwardName, body, date;
             private ImageView forwardAvatar, avatar;
             private View replyWrp, edited, check;
             private TextView replyName, replyBody;
-            private RecyclerView mediaRv, addonsRv;
+            private RecyclerView mediaRv, replyAddonsRv, emojisRv;
             private OnSwipeTouchListener onSwipeTouchListener;
             public CustomViewHolder(View v) {
                 super(v);
@@ -221,13 +254,14 @@ public class ChatFragment extends BaseExtraFragment {
                 container = v.findViewById(R.id.container);
                 box = v.findViewById(R.id.box);
                 forwardAvatar = v.findViewById(R.id.forward_avatar);
+                emojisRv = v.findViewById(R.id.emojis_rv);
                 body = v.findViewById(R.id.body);
                 forwardName = v.findViewById(R.id.forward_name);
                 avatar = v.findViewById(R.id.avatar);
                 replyWrp = v.findViewById(R.id.reply_wrp);
                 mediaRv = v.findViewById(R.id.media_rv);
                 check = v.findViewById(R.id.check);
-                addonsRv = v.findViewById(R.id.reply_addons_rv);
+                replyAddonsRv = v.findViewById(R.id.reply_addons_rv);
                 replyBody = v.findViewById(R.id.reply_body);
                 replyName = v.findViewById(R.id.reply_name);
                 date = v.findViewById(R.id.date);
@@ -303,8 +337,7 @@ public class ChatFragment extends BaseExtraFragment {
 
                     @Override
                     public void onLongPress(View v) {
-                        optionsMessagePosition = getAdapterPosition();
-                        showMessageOptions();
+                        showMessageOptions(getAdapterPosition());
                     }
                 };
                 replyWrp.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
@@ -332,6 +365,10 @@ public class ChatFragment extends BaseExtraFragment {
                 });
                 mediaRv.setOnTouchListener(onSwipeTouchListener);
                 container.setOnTouchListener(onSwipeTouchListener);
+            }
+
+            public RecyclerView getEmojisRv() {
+                return emojisRv;
             }
 
             public OnSwipeTouchListener getOnSwipeTouchListener() {
@@ -366,8 +403,8 @@ public class ChatFragment extends BaseExtraFragment {
                 return mediaRv;
             }
 
-            public RecyclerView getAddonsRv() {
-                return addonsRv;
+            public RecyclerView getReplyAddonsRv() {
+                return replyAddonsRv;
             }
 
             public View getForwardWrp() {
@@ -412,6 +449,15 @@ public class ChatFragment extends BaseExtraFragment {
             MessageModel message = messages.get(holder.getAdapterPosition());
             SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
             OnSwipeTouchListener onSwipeTouchListener = holder.getOnSwipeTouchListener();
+            RecyclerView emojisRv = holder.getEmojisRv();
+            if(message.getRating() == null) {
+                emojisRv.setVisibility(View.GONE);
+            }
+            else {
+                emojisRv.setVisibility(View.VISIBLE);
+                emojisRv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+                emojisRv.setAdapter(new RatingAdapter(message.getRating()));
+            }
             if(message.isEdited()) {
                 holder.getEdited().setVisibility(View.VISIBLE);
             }
@@ -421,6 +467,9 @@ public class ChatFragment extends BaseExtraFragment {
                 if(message.getForwardedFrom().getIcon() != null) {
                     Picasso.get().load(String.join("/", ApiBuilder.PUBLIC_PATH, message.getForwardedFrom().getIcon())).into(holder.getForwardAvatar());
                 }
+            }
+            else {
+                holder.getForwardWrp().setVisibility(View.GONE);
             }
             if(message.getBody() != null) {
                 holder.getBody().setText(message.getBody());
@@ -456,12 +505,12 @@ public class ChatFragment extends BaseExtraFragment {
                         scrollToMessage(holder.getAdapterPosition());
                     });
                     adapter.setOnSwipeTouchListener(onSwipeTouchListener);
-                    holder.getAddonsRv().setVisibility(View.VISIBLE);
-                    holder.getAddonsRv().setLayoutManager(new GridLayoutManager(getContext(), 2));
-                    holder.getAddonsRv().setAdapter(adapter);
+                    holder.getReplyAddonsRv().setVisibility(View.VISIBLE);
+                    holder.getReplyAddonsRv().setLayoutManager(new GridLayoutManager(getContext(), 2));
+                    holder.getReplyAddonsRv().setAdapter(adapter);
                 }
                 else {
-                    holder.getAddonsRv().setVisibility(View.GONE);
+                    holder.getReplyAddonsRv().setVisibility(View.GONE);
                 }
                 UserModel user = parent.getFrom().getId().equals(loggedUser.getId()) ? parent.getTo() : parent.getFrom();
                 holder.getReplyWrp().setVisibility(View.VISIBLE);
@@ -491,11 +540,13 @@ public class ChatFragment extends BaseExtraFragment {
             holder.getDate().setText(dateFormat.format(new Date(message.getCreatedAt())));
         }
 
-        private void showMessageOptions() {
+        private void showMessageOptions(int position) {
             topMainWrp.setVisibility(View.GONE);
             topOptionsWrp.setVisibility(View.VISIBLE);
             bottomWrp.setVisibility(View.GONE);
             optionsWrp.setVisibility(View.VISIBLE);
+            int oldPos = optionsMessagePosition;
+            optionsMessagePosition = position;
             MessageModel message = messages.get(optionsMessagePosition);
             if(!message.getFrom().getId().equals(loggedUser.getId())) {
                 optionsEditWrp.setVisibility(View.GONE);
@@ -506,6 +557,9 @@ public class ChatFragment extends BaseExtraFragment {
                 optionsEditWrp.setVisibility(View.VISIBLE);
             }
             notifyItemChanged(optionsMessagePosition);
+            if(oldPos >= 0) {
+                notifyItemChanged(oldPos);
+            }
         }
 
         private void scrollToMessage(int from) {
@@ -1038,6 +1092,7 @@ public class ChatFragment extends BaseExtraFragment {
         if(user.getId().equals(currentUser.getId())) {
             activity.runOnUiThread(() -> {
                 status.setVisibility(View.VISIBLE);
+                status.setText(getContext().getResources().getString(R.string.online_status));
             });
         }
     };
@@ -1123,7 +1178,42 @@ public class ChatFragment extends BaseExtraFragment {
         });
     };
 
+    private Emitter.Listener loggedOutListener = (Object ...args) -> {
+        String id = (String) args[0];
+        if(!id.equals(currentUser.getId())) return;
+        activity.runOnUiThread(() -> {
+            status.setVisibility(View.GONE);
+        });
+    };
+
+    private Emitter.Listener currentLoggedOut = (Object ...args) -> {
+        String id = (String) args[0];
+        if(id.equals(currentUser.getId())) {
+            activity.runOnUiThread(() -> {
+                status.setVisibility(View.GONE);
+            });
+        }
+    };
+
+    private Emitter.Listener messageToggledRatingListener = (Object ...args) -> {
+        Gson gson = new Gson();
+        MessageModel message = gson.fromJson((String) args[0], MessageModel.class);
+        activity.runOnUiThread(() -> {
+            for(int i = messages.size() - 1;i >= 0; --i) {
+                MessageModel msg = messages.get(i);
+                if(msg.getId().equals(message.getId())) {
+                    msg.setRating(message.getRating());
+                    rv.getAdapter().notifyItemChanged(i);
+                    break;
+                }
+            }
+        });
+    };
+
     private void initSockets() {
+        socket.on(Defs.WS_MESSAGES.SERVER.MESSAGE_TOGGLE_RATING, messageToggledRatingListener);
+        socket.on(Defs.WS_MESSAGES.SERVER.CONTACT_LOGGED_OUT, currentLoggedOut);
+        socket.on(Defs.WS_MESSAGES.SERVER.LOGGED_OUT, loggedOutListener);
         socket.on(Defs.WS_MESSAGES.SERVER.MESSAGE_READ, messageReadListener);
         socket.on(Defs.WS_MESSAGES.SERVER.USER_ONLINE, userOnlineListener);
         socket.on(Defs.WS_MESSAGES.SERVER.USER_OFFLINE, userOfflineListener);
@@ -1135,6 +1225,9 @@ public class ChatFragment extends BaseExtraFragment {
     }
 
     private void finishSockets() {
+        socket.off(Defs.WS_MESSAGES.SERVER.MESSAGE_TOGGLE_RATING, messageToggledRatingListener);
+        socket.off(Defs.WS_MESSAGES.SERVER.CONTACT_LOGGED_OUT, currentLoggedOut);
+        socket.off(Defs.WS_MESSAGES.SERVER.LOGGED_OUT, loggedOutListener);
         socket.off(Defs.WS_MESSAGES.SERVER.MESSAGE_READ, messageReadListener);
         socket.off(Defs.WS_MESSAGES.SERVER.USER_ONLINE, userOnlineListener);
         socket.off(Defs.WS_MESSAGES.SERVER.USER_OFFLINE, userOfflineListener);
@@ -1278,6 +1371,81 @@ public class ChatFragment extends BaseExtraFragment {
         }
     };
 
+    private View.OnClickListener optionsEmojiClicked = (View v) -> {
+        EmojiPickerView root = (EmojiPickerView) getLayoutInflater().inflate(R.layout.emojis_dialog, null);
+        int h = getContext().getResources().getDisplayMetrics().heightPixels / 3;
+        root.setOnEmojiPickedListener((EmojiViewItem emojiViewItem) -> {
+            ApiBuilder builder = ApiBuilder.getInstance(getContext());
+            MessageModel message = messages.get(optionsMessagePosition);
+            builder.setOnInitializedListener(() -> {
+                builder.send(builder.getApi(ApiService.class).toggleMessageRating(new BaseData(message.getId(), emojiViewItem.getEmoji())));
+            });
+            builder.setResponseListener(new ApiBuilder.ResponseListener<MessageRatingResponseModel>() {
+                @Override
+                public void onResponse(Call<MessageRatingResponseModel> call, Response<MessageRatingResponseModel> response) {
+                    if(response.code() == 201) {
+                        MessageRatingResponseModel res = response.body();
+                        if(res.getAction() == 0) {
+                            if(message.getRating() != null) {
+                                for(BaseData bd : message.getRating()) {
+                                    if(loggedUser.getId().equals(bd.getId())) {
+                                        message.getRating().remove(message.getRating().indexOf(bd));
+                                        if(message.getRating().size() == 0) {
+                                            message.setRating(null);
+                                        }
+                                        rv.getAdapter().notifyItemChanged(optionsMessagePosition);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            List<BaseData> data = message.getRating();
+                            if(data != null) {
+                                boolean has = false;
+                                for(BaseData bd: data) {
+                                    if(bd.getId().equals(loggedUser.getId())) {
+                                        has = true;
+                                        data.set(data.indexOf(bd), new BaseData(loggedUser.getId(), res.getFace()));
+                                        break;
+                                    }
+                                }
+                                if(!has) {
+                                    data.add(new BaseData(loggedUser.getId(), res.getFace()));
+                                }
+                            }
+                            else {
+                                data = new ArrayList<>();
+                                data.add(new BaseData(loggedUser.getId(), res.getFace()));
+                                message.setRating(data);
+                            }
+                            rv.getAdapter().notifyItemChanged(messages.indexOf(message));
+                        }
+                        Gson gson = new Gson();
+                        socket.emit(Defs.WS_MESSAGES.CLIENT.MESSAGE_RATED, gson.toJson(message, new TypeToken<MessageModel>(){}.getType()));
+                    }
+                    else {
+                        Toast.makeText(getContext(), getContext().getResources().getString(R.string.error_has_occurred), Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        });
+        PopupWindow win = new PopupWindow(root, WindowManager.LayoutParams.MATCH_PARENT, h);
+        win.setOutsideTouchable(true);
+        win.setOnDismissListener(() -> {
+            hideMessageOptions(() -> {
+                int pos = optionsMessagePosition;
+                optionsMessagePosition = -1;
+                rv.getAdapter().notifyItemChanged(pos);
+            });
+        });
+        win.showAtLocation(root, Gravity.BOTTOM, 0, 0);
+    };
+
+    private View.OnClickListener optionsEditClicked = (View v) -> {
+
+    };
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -1320,6 +1488,8 @@ public class ChatFragment extends BaseExtraFragment {
         optionsForward.setOnClickListener(optionsForwardClicked);
         optionsReply.setOnClickListener(optionsReplyClicked);
         buttonDown.setOnClickListener(buttonDownClicked);
+        optionsEmoji.setOnClickListener(optionsEmojiClicked);
+        optionsEdit.setOnClickListener(optionsEditClicked);
         init();
         return root;
     }
@@ -1336,31 +1506,35 @@ public class ChatFragment extends BaseExtraFragment {
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 if(recyclerView.canScrollVertically(1)) {
                     buttonDown.setVisibility(View.VISIBLE);
-                    int pos = ((LinearLayoutManager) rv.getLayoutManager()).findFirstVisibleItemPosition();
-                    int endPos = ((LinearLayoutManager) rv.getLayoutManager()).findLastVisibleItemPosition();
-                    int unreadCount = 0;
-                    if(pos != RecyclerView.NO_POSITION) {
-                        for(int i = pos; i < messages.size(); ++i) {
-                            MessageModel message = messages.get(i);
-                            if(endPos != RecyclerView.NO_POSITION) {
-                                if(!message.isRead() && message.getTo().getId().equals(loggedUser.getId())) {
-                                    if(i <= endPos) {
-                                        message.setRead(true);
-                                        socket.emit(Defs.WS_MESSAGES.CLIENT.MESSAGE_READ, message.getId());
-                                    }
-                                    else {
-                                        ++unreadCount;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    newCount.setText(unreadCount == 0 ? "" : String.valueOf(unreadCount));
                 }
                 else {
                     buttonDown.setVisibility(View.GONE);
                     newCount.setText("");
                 }
+                int pos = ((LinearLayoutManager) rv.getLayoutManager()).findFirstVisibleItemPosition();
+                int endPos = ((LinearLayoutManager) rv.getLayoutManager()).findLastVisibleItemPosition();
+                int unreadCount = 0;
+                if(pos != RecyclerView.NO_POSITION) {
+                    for(int i = pos; i < messages.size(); ++i) {
+                        MessageModel message = messages.get(i);
+                        if(!message.isRead() && message.getTo().getId().equals(loggedUser.getId())) {
+                            if(endPos != RecyclerView.NO_POSITION) {
+                                if(i > endPos) {
+                                    ++unreadCount;
+                                }
+                                else {
+                                    message.setRead(true);
+                                    socket.emit(Defs.WS_MESSAGES.CLIENT.MESSAGE_READ, message.getId());
+                                }
+                            }
+                            else {
+                                message.setRead(true);
+                                socket.emit(Defs.WS_MESSAGES.CLIENT.MESSAGE_READ, message.getId());
+                            }
+                        }
+                    }
+                }
+                newCount.setText(unreadCount == 0 ? "" : String.valueOf(unreadCount));
             }
 
             @Override

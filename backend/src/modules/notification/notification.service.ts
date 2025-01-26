@@ -29,6 +29,7 @@ import {
   BROADCAST_ACTION,
   NotificationType,
 } from '@shared/interfaces/notification';
+import { BROADCAST_CANCEL_NOTIFICATIONS } from '@/core/translations';
 
 @Injectable()
 export class NotificationService {
@@ -124,16 +125,18 @@ export class NotificationService {
       relations: BOOKING_RELATIONS,
     });
     if (!bookings.length) throw new BadRequestException(error_empty_bookings);
-    let title = '';
-    let body = '';
-    switch (dto.action) {
-      case BROADCAST_ACTION.CANCEL_BOOKING:
-        const date = moment(dto.date).format('DD.MM.YYYY');
-        title = currentUser.name + ' отменил(а) бронирование за ' + date;
-        body = dto.message;
-        break;
-    }
     for (const booking of bookings) {
+      let title = '';
+      let body = '';
+      switch (dto.action) {
+        case BROADCAST_ACTION.CANCEL_BOOKING:
+          const date = moment(dto.date).format('DD.MM.YYYY HH:mm');
+          title = BROADCAST_CANCEL_NOTIFICATIONS.title[booking.user.locale]
+            .replace('%date', date)
+            .replace('%name', currentUser.name);
+          body = dto.message;
+          break;
+      }
       await this.create({
         type: NotificationType.NEW_BROADCAST,
         title,

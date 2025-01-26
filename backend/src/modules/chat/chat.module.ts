@@ -4,15 +4,11 @@ import { ChatService } from './chat.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ChatEntity } from '@/entities/ChatEntity';
 import { MessageEntity } from '@/entities/MessageEntity';
-import { ConfigModule } from '@/core/config/config.module';
 
 @Module({
   controllers: [ChatController],
   providers: [ChatService],
   exports: [ChatService],
-  imports: [
-    TypeOrmModule.forFeature([ChatEntity, MessageEntity]),
-    ConfigModule,
-  ],
+  imports: [TypeOrmModule.forFeature([ChatEntity, MessageEntity])],
 })
 export class ChatModule {}

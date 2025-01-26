@@ -32,7 +32,6 @@ import com.vapid_software.prodigy.helpers.Defs;
 import com.vapid_software.prodigy.helpers.FilterItem;
 import com.vapid_software.prodigy.helpers.FilterQueryOptions;
 import com.vapid_software.prodigy.helpers.FilterResponse;
-import com.vapid_software.prodigy.helpers.ViewHolder;
 import com.vapid_software.prodigy.models.ChatModel;
 import com.vapid_software.prodigy.models.MessageModel;
 import com.vapid_software.prodigy.models.UserModel;
@@ -57,6 +56,7 @@ public class ChatsFragment extends BaseExtraFragment {
     private CoreActivity activity;
     private UserModel loggedUser;
     private Socket socket;
+    private String searchText;
     private final static int LIMIT = 20;
 
     private class CustomViewHolder extends RecyclerView.ViewHolder {
@@ -237,6 +237,7 @@ public class ChatsFragment extends BaseExtraFragment {
     }
 
     private Emitter.Listener chatRemovedListener = (Object ...args) -> {
+        if(chats == null) return;
         String id = (String) args[0];
         activity.runOnUiThread(() -> {
             for(ChatModel chat : chats) {
@@ -255,6 +256,7 @@ public class ChatsFragment extends BaseExtraFragment {
     };
 
     private Emitter.Listener messageReadListener = (Object ...args) -> {
+        if(chats == null) return;
         Gson gson = new Gson();
         MessageModel message = gson.fromJson((String) args[0], MessageModel.class);
         activity.runOnUiThread(() -> {
@@ -270,6 +272,7 @@ public class ChatsFragment extends BaseExtraFragment {
     };
 
     private Emitter.Listener messageDeletedListener = (Object ...args) -> {
+        if(chats == null) return;
         String msgId = (String) args[0];
         activity.runOnUiThread(() -> {
             for(ChatModel chat : chats) {
@@ -381,7 +384,6 @@ public class ChatsFragment extends BaseExtraFragment {
         builder.setResponseListener(new ApiBuilder.ResponseListener<FilterResponse<ChatModel>>() {
             @Override
             public void onResponse(Call<FilterResponse<ChatModel>> call, Response<FilterResponse<ChatModel>> response) {
-                Log.i("code", String.valueOf(response.code()));
                 if(response.code() == 201) {
                     total = response.body().getCount();
                     loader.setVisibility(View.GONE);

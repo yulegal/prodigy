@@ -30,12 +30,15 @@ public class Defs {
             public final static String NEW_MESSAGE = "NEW_MESSAGE";
             public final static String USER_ONLINE_STATUS = "USER_ONLINE_STATUS";
             public final static String LOGGED_OUT = "LOGGED_OUT";
+            public final static String CONTACT_LOGGED_OUT = "CONTACT_LOGGED_OUT";
+            public final static String MESSAGE_TOGGLE_RATING = "MESSAGE_TOGGLE_RATING";
         }
         public static class CLIENT {
             public final static String I_AM = "I_AM";
             public final static String MESSAGE_READ = "CLIENT_MESSAGE_READ";
             public final static String CHECK_USER_ONLINE = "CHECK_USER_ONLINE";
             public final static String LOGOUT = "LOGOUT";
+            public final static String MESSAGE_RATED = "MESSAGE_RATED";
         }
     }
 
@@ -50,6 +53,7 @@ public class Defs {
         public final static String SERVICE_BLOCKED_DUE_TO_LACK_BALANCE = "SERVICE_BLOCKED_DUE_TO_LACK_BALANCE";
         public final static String TRIAL_PERIOD_END_APPROACHES = "TRIAL_PERIOD_END_APPROACHES";
         public final static String BOOKING_FINISHED = "BOOKING_FINISHED";
+        public final static String NEW_BROADCAST = "NEW_BROADCAST";
     }
 
     public static class Role {
@@ -188,6 +192,7 @@ public class Defs {
     public static class PermissionCode {
         public final static int GALLERY_CODE = 1000;
         public final static int CONTACTS_CODE = 1100;
+        public final static int LOCATION_CODE = 1200;
     }
 
     public static class ResultCode {

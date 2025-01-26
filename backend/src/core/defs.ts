@@ -18,12 +18,15 @@ export const WS_MESSAGES = {
     CHAT_REMOVED: 'CHAT_REMOVED',
     MESSAGE_EDITED: 'MESSAGE_EDITED',
     LOGGED_OUT: 'LOGGED_OUT',
+    CONTACT_LOGGED_OUT: 'CONTACT_LOGGED_OUT',
+    MESSAGE_TOGGLE_RATING: 'MESSAGE_TOGGLE_RATING',
   },
   CLIENT: {
     I_AM: 'I_AM',
     MESSAGE_READ: 'CLIENT_MESSAGE_READ',
     CHECK_USER_ONLINE: 'CHECK_USER_ONLINE',
     LOGOUT: 'LOGOUT',
+    MESSAGE_RATED: 'MESSAGE_RATED',
   },
 };
 
@@ -38,6 +41,7 @@ export const EVENTS = {
   CHECK_USER_ONLINE: 'CHECK_USER_ONLINE',
   HANDLE_USER_ONLINE: 'HANDLE_USER_ONLINE',
   USER_LOGGED_OUT: 'USER_LOGGED_OUT',
+  MESSAGE_RATED: 'MESSAGE_RATED',
 };
 
 export const USER_RELATIONS = ['role'];
@@ -101,14 +105,18 @@ const LOCALE_MESSAGE_RELATIONS = [
   'parent',
   'chat',
   'forwardedFrom',
+  'ratings',
+  'parent.ratings',
   ...USER_RELATIONS.map((v) => 'from.' + v),
   ...USER_RELATIONS.map((v) => 'to.' + v),
   ...CHAT_RELATIONS.map((v) => 'chat.' + v),
   ...USER_RELATIONS.map((v) => 'forwardedFrom.' + v),
+  ...USER_RELATIONS.map((v) => 'ratings.user.' + v),
   ...USER_RELATIONS.map((v) => 'parent.from.' + v),
   ...USER_RELATIONS.map((v) => 'parent.to.' + v),
   ...CHAT_RELATIONS.map((v) => 'parent.chat.' + v),
   ...USER_RELATIONS.map((v) => 'parent.forwardedFrom.' + v),
+  ...USER_RELATIONS.map((v) => 'parent.ratings.user.' + v),
 ];
 
 export const MESSAGE_RELATIONS = [

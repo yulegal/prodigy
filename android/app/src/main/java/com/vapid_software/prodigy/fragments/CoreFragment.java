@@ -254,6 +254,7 @@ public class CoreFragment extends Fragment implements CoreActivity.OnUserLoggedO
     }
 
     private void initSockets() {
+        socket.on(Defs.NotificationType.NEW_BROADCAST, notificationsCountListener);
         socket.on(Defs.NotificationType.NEW_BOOKING, notificationsCountListener);
         socket.on(Defs.NotificationType.BOOKING_CANCELED, notificationsCountListener);
         socket.on(Defs.NotificationType.BOOKING_FINISHED, notificationsCountListener);
@@ -267,6 +268,7 @@ public class CoreFragment extends Fragment implements CoreActivity.OnUserLoggedO
     }
 
     private void finishSockets() {
+        socket.off(Defs.NotificationType.NEW_BROADCAST, notificationsCountListener);
         socket.off(Defs.NotificationType.NEW_BOOKING, notificationsCountListener);
         socket.off(Defs.NotificationType.BOOKING_CANCELED, notificationsCountListener);
         socket.off(Defs.NotificationType.BOOKING_FINISHED, notificationsCountListener);

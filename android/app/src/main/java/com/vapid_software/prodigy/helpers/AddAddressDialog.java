@@ -1,17 +1,28 @@
 package com.vapid_software.prodigy.helpers;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.URLUtil;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.tasks.Task;
 import com.qkopy.richlink.RichLinkViewQkopy;
 import com.qkopy.richlink.ViewListener;
 import com.qkopy.richlink.data.model.MetaData;
@@ -42,12 +53,26 @@ public class AddAddressDialog extends Dialog {
     private void init() {
         View root = getLayoutInflater().inflate(R.layout.add_address_dialog, null);
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        CheckBox cb = root.findViewById(R.id.cb);
         View close = root.findViewById(R.id.close);
         View button = root.findViewById(R.id.button);
         EditText url = root.findViewById(R.id.url);
         TextView error = root.findViewById(R.id.error);
         View loader = root.findViewById(R.id.loader);
         EditText address = root.findViewById(R.id.address);
+
+        cb.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            if(isChecked && ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                FusedLocationProviderClient providerClient = LocationServices.getFusedLocationProviderClient(getContext());
+                providerClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
+                        .addOnCompleteListener((Task<Location> task) -> {
+                            if(task.isSuccessful()) {
+                                Log.i("long", String.valueOf(task.getResult().getLongitude()));
+                                Log.i("lat", String.valueOf(task.getResult().getLatitude()));
+                            }
+                        });
+            }
+        });
 
         close.setOnClickListener((View view) -> {
             dismiss();

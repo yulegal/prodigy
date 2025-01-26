@@ -14,6 +14,11 @@ export class MessageMapper {
       chat: ChatMapper.map(item.chat),
       edited: item.edited,
     };
+    if (item.ratings?.length)
+      result.rating = item.ratings.map((v) => ({
+        id: v.user.id,
+        name: v.face,
+      }));
     if (item.body) result.body = item.body;
     if (item.parent && includeParent)
       result.parent = MessageMapper.map(item.parent);

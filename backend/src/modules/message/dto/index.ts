@@ -1,5 +1,6 @@
 import { ChatDto } from '@/modules/chat/dto';
 import { UserDto } from '@/modules/user/dto';
+import { BaseData } from '@shared/interfaces';
 import {
   IMessage,
   IMessageCreate,
@@ -19,6 +20,7 @@ export class MessageDto implements IMessage {
   parent?: MessageDto;
   forwardedFrom?: UserDto;
   edited: boolean;
+  rating?: BaseData[];
 }
 
 export class MessageCreateDto implements IMessageCreate {

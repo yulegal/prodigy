@@ -168,10 +168,38 @@ export class SocketService {
     this.logger.log(`${SocketService.name} notifyMessageEdited end`);
   }
 
-  @OnEvent(EVENTS.USER_LOGGED_OUT)
-  async logout(clientId: string) {
-    this.logger.log(`${SocketService.name} logout start`);
+  async notifyUserLoggedOut(
+    userIds: string[],
+    userId: string,
+    clientId: string,
+  ) {
+    this.logger.log(`${SocketService.name} notifyUserLoggedOut start`);
+    const allClients = await this.redisClientService.getAll(
+      REDIS_NAMESPACE.WS + '*',
+    );
+    const clients = allClients.filter((v) => userIds.includes(v.value.id));
+    clients.forEach((v) => {
+      this.socket
+        .to(v.key.substring(3))
+        .emit(WS_MESSAGES.SERVER.CONTACT_LOGGED_OUT, userId);
+    });
     this.socket.to(clientId).emit(WS_MESSAGES.SERVER.LOGGED_OUT);
-    this.logger.log(`${SocketService.name} logout end`);
+    this.logger.log(`${SocketService.name} notifyUserLoggedOut end`);
+  }
+
+  @OnEvent(EVENTS.MESSAGE_RATED)
+  async messageRated(data: MessageDto, user: UserDto) {
+    this.logger.log(`${SocketService.name} messageRated start`);
+    const uid = data.from.id == user.id ? data.to.id : data.from.id;
+    const allClients = await this.redisClientService.getAll(
+      REDIS_NAMESPACE.WS + '*',
+    );
+    const clients = allClients.filter((v) => v.value.id == uid);
+    clients.forEach((v) => {
+      this.socket
+        .to(v.key.substring(3))
+        .emit(WS_MESSAGES.SERVER.MESSAGE_TOGGLE_RATING, JSON.stringify(data));
+    });
+    this.logger.log(`${SocketService.name} messageRated end`);
   }
 }

@@ -90,14 +90,16 @@ public class CoreActivity extends AppCompatActivity implements BaseExtraFragment
         });
     };
     private Emitter.Listener logoutListener = (Object ...args) -> {
-        runOnUiThread(() -> {
-            UserModel.logout(() -> {
-                loggedUser = null;
-                if(onUserLoggedOutListener != null) {
-                    onUserLoggedOutListener.onUserLoggedOut();
-                }
-            }, this);
-        });
+        if(loggedUser != null) {
+            runOnUiThread(() -> {
+                UserModel.logout(() -> {
+                    loggedUser = null;
+                    if(onUserLoggedOutListener != null) {
+                        onUserLoggedOutListener.onUserLoggedOut();
+                    }
+                }, this);
+            });
+        }
     };
     {
         try {

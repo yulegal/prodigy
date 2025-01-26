@@ -16,7 +16,6 @@ import { MessageEntity } from '@/entities/MessageEntity';
 import { MessageMapper } from '../message/mapper';
 import { SocketService } from '@/core/socket/socket.service';
 import { error_chat_not_found } from '@shared/errors';
-import { ConfigService } from '@/core/config/config.service';
 
 @Injectable()
 export class ChatService {
@@ -28,7 +27,6 @@ export class ChatService {
     @InjectRepository(MessageEntity)
     private readonly messageRepo: Repository<MessageEntity>,
     private readonly socketService: SocketService,
-    private readonly configService: ConfigService,
   ) {
     this.logger = new Logger(ChatService.name);
   }
@@ -42,18 +40,23 @@ export class ChatService {
         if (!items.length) return [];
         const msgs = await this.messageRepo
           .createQueryBuilder('msg')
-          .select('msg.id')
           .distinctOn(['chat.id'])
+          .select('msg.id')
           .innerJoin('msg.chat', 'chat')
           .where('chat.id in(' + items.map((v) => `'${v.id}'`).join(',') + ')')
           .orderBy('chat.id', 'DESC')
-          .addOrderBy('msg.createdAt', 'DESC')
-          .getMany();
+          .addOrderBy('msg.createdAt', 'DESC');
+        const msgList = await msgs.getMany();
         const messages = await this.messageRepo.find({
           where: {
-            id: In(msgs.map((v) => v.id)),
+            id: In(msgList.map((v) => v.id)),
           },
           relations: MESSAGE_RELATIONS,
+          order: {
+            chat: {
+              updatedAt: 'DESC',
+            },
+          },
         });
         const result = [];
         for (const message of messages) {

@@ -1,3 +1,4 @@
+import { BaseData } from '..';
 import { IChat } from '../chat';
 import { IUser } from '../user';
 
@@ -13,6 +14,7 @@ export interface IMessage {
     parent?: IMessage;
     forwardedFrom?: IUser;
     edited: boolean;
+    rating?: BaseData[];
 }
 
 export interface IMessageCreate {
