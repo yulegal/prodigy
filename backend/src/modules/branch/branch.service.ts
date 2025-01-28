@@ -113,56 +113,61 @@ export class BranchService {
       relations: BRANCH_RELATIONS,
     });
     if (!branch) throw new BadRequestException(error_branch_not_found);
-    if (branch.service.user.id != currentUser.id)
+    if (
+      branch.service.user.id != currentUser.id &&
+      !branch.users.some((v) => v.user.id == currentUser.id)
+    )
       throw new ForbiddenException();
     branch.averageSession = dto.averageSession;
     branch.unit = dto.unit;
     branch.workSchedule = dto.workSchedule;
     branch.address = dto.address;
     if (dto.extra) branch.extra = dto.extra;
-    const oldUsers = branch.users;
-    branch.users = [];
-    for (const userId of dto.userIds) {
-      const user = new BranchUserEntity();
-      user.user = await this.userRepo.findOne({
-        where: { id: userId },
-        relations: USER_RELATIONS,
-      });
-      if (
-        branch.service.user.id != userId &&
-        user.user.role.id != USER_ROLES.user
-      )
-        throw new BadRequestException(
-          error_user_add_branch_forbidden + ' ' + userId,
-        );
-      branch.users.push(user);
-      if (
-        !oldUsers.some((v) => v.user.id == userId) &&
-        branch.service.user.id != userId
-      ) {
+    if (currentUser.role.id != USER_ROLES.helper) {
+      const oldUsers = branch.users;
+      branch.users = [];
+      for (const userId of dto.userIds) {
+        const user = new BranchUserEntity();
+        user.user = await this.userRepo.findOne({
+          where: { id: userId },
+          relations: USER_RELATIONS,
+        });
+        if (
+          branch.service.user.id != userId &&
+          user.user.role.id != USER_ROLES.user
+        )
+          throw new BadRequestException(
+            error_user_add_branch_forbidden + ' ' + userId,
+          );
+        branch.users.push(user);
+        if (
+          !oldUsers.some((v) => v.user.id == userId) &&
+          branch.service.user.id != userId
+        ) {
+          await this.notificationService.create({
+            title: USER_ADDED_TO_BRANCH_NOTIFICATIONS.title[user.user.locale],
+            body: USER_ADDED_TO_BRANCH_NOTIFICATIONS.body[user.user.locale]
+              .replace('%name', currentUser.name)
+              .replace('%address', dto.address.address),
+            type: NotificationType.USER_ADDED_TO_BRANCH,
+            itemId: currentUser.id,
+            userId: user.user.id,
+          });
+        }
+      }
+      const ids = oldUsers.map((v) => v.user.id);
+      for (const user of branch.users.filter((v) => !ids.includes(v.user.id))) {
+        if (user.user.id == branch.service.user.id) continue;
         await this.notificationService.create({
-          title: USER_ADDED_TO_BRANCH_NOTIFICATIONS.title[user.user.locale],
-          body: USER_ADDED_TO_BRANCH_NOTIFICATIONS.body[user.user.locale]
-            .replace('%name', currentUser.name)
+          title: USER_REMOVED_FROM_BRANCH_NOTIFICATIONS.title[user.user.locale],
+          body: USER_REMOVED_FROM_BRANCH_NOTIFICATIONS.body[user.user.locale]
+            .replace('%name', user.user.name)
             .replace('%address', dto.address.address),
-          type: NotificationType.USER_ADDED_TO_BRANCH,
+          type: NotificationType.USER_REMOVED_FROM_BRANCH,
           itemId: currentUser.id,
           userId: user.user.id,
         });
       }
-    }
-    const ids = oldUsers.map((v) => v.user.id);
-    for (const user of branch.users.filter((v) => !ids.includes(v.user.id))) {
-      if (user.user.id == branch.service.user.id) continue;
-      await this.notificationService.create({
-        title: USER_REMOVED_FROM_BRANCH_NOTIFICATIONS.title[user.user.locale],
-        body: USER_REMOVED_FROM_BRANCH_NOTIFICATIONS.body[user.user.locale]
-          .replace('%name', user.user.name)
-          .replace('%address', dto.address.address),
-        type: NotificationType.USER_REMOVED_FROM_BRANCH,
-        itemId: currentUser.id,
-        userId: user.user.id,
-      });
     }
     branch.extra = dto.extra ?? null;
     const result = await this.repo.save(branch);
@@ -267,5 +272,22 @@ export class BranchService {
     });
     this.logger.log(`${BranchService.name} toggleRating end`);
     return Math.round(sum / total);
+  }
+
+  async getUserBranch(currentUser: UserDto) {
+    this.logger.log(`${BranchService.name} getUserBranch start`);
+    const branch = await this.repo.findOne({
+      where: {
+        users: {
+          user: {
+            id: currentUser.id,
+          },
+        },
+      },
+      relations: BRANCH_RELATIONS,
+    });
+    if (!branch) throw new BadRequestException(error_branch_not_found);
+    this.logger.log(`${BranchService.name} getUserBranch end`);
+    return BranchMapper.map(branch);
   }
 }

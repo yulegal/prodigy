@@ -34,17 +34,18 @@ import com.squareup.picasso.Picasso;
 import com.vapid_software.prodigy.api.ApiBuilder;
 import com.vapid_software.prodigy.api.ApiService;
 import com.vapid_software.prodigy.fragments.BaseExtraFragment;
+import com.vapid_software.prodigy.fragments.BranchAddFragment;
 import com.vapid_software.prodigy.fragments.BroadcastFragment;
 import com.vapid_software.prodigy.fragments.ChatsFragment;
 import com.vapid_software.prodigy.fragments.CoreFragment;
 import com.vapid_software.prodigy.fragments.MyContactsFragment;
 import com.vapid_software.prodigy.fragments.ProviderFragment;
-import com.vapid_software.prodigy.fragments.UserBranchesFragment;
 import com.vapid_software.prodigy.helpers.ConfirmDialog;
 import com.vapid_software.prodigy.helpers.DBHelper;
 import com.vapid_software.prodigy.helpers.Defs;
 import com.vapid_software.prodigy.helpers.Utils;
 import com.vapid_software.prodigy.models.AuthResponseModel;
+import com.vapid_software.prodigy.models.BranchModel;
 import com.vapid_software.prodigy.models.UserEditNameModel;
 import com.vapid_software.prodigy.models.UserModel;
 
@@ -206,9 +207,25 @@ public class CoreActivity extends AppCompatActivity implements BaseExtraFragment
                     Toast.makeText(this, getResources().getString(R.string.you_must_be_helper), Toast.LENGTH_LONG).show();
                 }
                 else {
-                    UserBranchesFragment fragment = new UserBranchesFragment();
-                    fragment.setOnBackPressedListener(this);
-                    loadExtra(fragment);
+                    ApiBuilder builder = ApiBuilder.getInstance(this);
+                    builder.setResponseListener(new ApiBuilder.ResponseListener<BranchModel>() {
+                        @Override
+                        public void onResponse(Call<BranchModel> call, Response<BranchModel> response) {
+                            if(response.code() == 200) {
+                                BranchAddFragment fragment = new BranchAddFragment();
+                                fragment.setService(response.body().getService());
+                                fragment.setCurrentBranch(response.body());
+                                fragment.setOnBackPressedListener(CoreActivity.this);
+                                loadExtra(fragment);
+                            }
+                            else {
+                                Toast.makeText(context, context.getResources().getString(R.string.error_has_occurred), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                    builder.setOnInitializedListener(() -> {
+                        builder.send(builder.getApi(ApiService.class).getUserBranch());
+                    });
                 }
             }
             else if(id == R.id.nav_my_contacts) {

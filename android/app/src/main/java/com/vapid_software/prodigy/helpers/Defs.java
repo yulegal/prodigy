@@ -193,6 +193,7 @@ public class Defs {
         public final static int GALLERY_CODE = 1000;
         public final static int CONTACTS_CODE = 1100;
         public final static int LOCATION_CODE = 1200;
+        public final static int RECORD_AUDIO_CODE = 1250;
     }
 
     public static class ResultCode {

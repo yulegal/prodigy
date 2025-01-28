@@ -18,6 +18,11 @@
         <item name="android:textSize">20dp</item>
     </style>
 
+    <style name="ProfileTabText">
+        <item name="android:textSize">13dp</item>
+        <item name="fontFamily">@font/arial</item>
+    </style>
+
     <style name="FabButtonStyle">
         <item name="cornerSize">50%</item>
     </style>

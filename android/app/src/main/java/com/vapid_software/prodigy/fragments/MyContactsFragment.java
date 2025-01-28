@@ -51,7 +51,9 @@ public class MyContactsFragment extends BaseExtraFragment {
     private RecyclerView rv;
     private List<UserModel> contacts;
     private int page = 1;
+    private String searchText;
     private int total;
+    private SearchFragment searchFragment;
     private final static int LIMIT = 20;
 
     private final static String[] CONTACT_PROJECTIONS = {
@@ -144,12 +146,21 @@ public class MyContactsFragment extends BaseExtraFragment {
         validatePermissions();
     };
 
+    private SearchFragment.OnSearchChangeListener onSearchChangeListener = (String text) -> {
+        searchText = text;
+        page = 1;
+        contacts = null;
+        rv.setAdapter(null);
+        load();
+    };
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_my_contacts, container, false);
         accessWrp = root.findViewById(R.id.access_wrp);
         back = root.findViewById(R.id.back);
+        searchFragment = (SearchFragment) getChildFragmentManager().findFragmentById(R.id.search_fragment);
         loader = root.findViewById(R.id.loader);
         rv = root.findViewById(R.id.rv);
         empty = root.findViewById(R.id.empty);
@@ -172,6 +183,7 @@ public class MyContactsFragment extends BaseExtraFragment {
                 }
             }
         });
+        searchFragment.setOnSearchChangeListener(onSearchChangeListener);
     }
 
     private FilterQueryOptions getFilterQueryOptions() {
@@ -202,7 +214,7 @@ public class MyContactsFragment extends BaseExtraFragment {
                         if(rv.getLayoutManager() == null) {
                             rv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
                         }
-                        if(rv.getAdapter() == null) {
+                        if(rv.getAdapter() == null || page == 1) {
                             ContactAdapter adapter = new ContactAdapter(contacts);
                             adapter.setOnContactClickedListener((UserModel contact) -> {
                                 ChatFragment fragment = new ChatFragment();

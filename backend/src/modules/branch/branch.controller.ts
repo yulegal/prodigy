@@ -20,6 +20,11 @@ import { FilterQueryOptions } from '@/core/dto';
 export class BranchController {
   constructor(private readonly service: BranchService) {}
 
+  @Get('get-user-branch')
+  async getUserBranch(@User() user: UserDto) {
+    return this.service.getUserBranch(user);
+  }
+
   @Post()
   async create(@Body() dto: BranchCreateDto, @User() user: UserDto) {
     return this.service.create(dto, user);

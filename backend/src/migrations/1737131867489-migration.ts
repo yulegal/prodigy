@@ -178,6 +178,20 @@ export class Migration1737131867489 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "messages" ADD CONSTRAINT "FK_5800647d2d98e8a029f141ee925" FOREIGN KEY ("forwardedFromId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE NO ACTION`,
     );
+    await queryRunner.query(`CREATE TABLE "photos" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "fileName" character varying NOT NULL, "userId" uuid, CONSTRAINT "PK_5220c45b8e32d49d767b9b3d725" PRIMARY KEY ("id"))`);
+    await queryRunner.query(`CREATE TABLE "tags" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "name" character varying(45) NOT NULL, CONSTRAINT "PK_e7dc17249a1148a1970748eda99" PRIMARY KEY ("id"))`);
+    await queryRunner.query(`CREATE TYPE "public"."posts_visibility_enum" AS ENUM('EVERYONE', 'ONLY_ME', 'CONTACTS_ONLY')`);
+    await queryRunner.query(`CREATE TABLE "posts" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "body" character varying(3000), "addons" json, "visibility" "public"."posts_visibility_enum" NOT NULL, "userId" uuid, CONSTRAINT "PK_2829ac61eff60fcec60d7274b9e" PRIMARY KEY ("id"))`);
+    await queryRunner.query(`CREATE TABLE "user_actions" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "muted" boolean NOT NULL DEFAULT false, "blocked" boolean NOT NULL DEFAULT false, "userId" uuid, "actionUserId" uuid, CONSTRAINT "PK_3c8a683381b553ee59ce5b7b13a" PRIMARY KEY ("id"))`);
+    await queryRunner.query(`CREATE TABLE "posts_tags_tags" ("postsId" uuid NOT NULL, "tagsId" uuid NOT NULL, CONSTRAINT "PK_0102fd077ecbe473388af8f3358" PRIMARY KEY ("postsId", "tagsId"))`);
+    await queryRunner.query(`CREATE INDEX "IDX_cf364c7e6905b285c4b55a0034" ON "posts_tags_tags" ("postsId") `);
+    await queryRunner.query(`CREATE INDEX "IDX_ce163a967812183a51b044f740" ON "posts_tags_tags" ("tagsId") `);
+    await queryRunner.query(`ALTER TABLE "photos" ADD CONSTRAINT "FK_74da4f305b050f7d27c73b04263" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+    await queryRunner.query(`ALTER TABLE "posts" ADD CONSTRAINT "FK_ae05faaa55c866130abef6e1fee" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+    await queryRunner.query(`ALTER TABLE "user_actions" ADD CONSTRAINT "FK_e65a8053e5b02e0b89947b6bac9" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+    await queryRunner.query(`ALTER TABLE "user_actions" ADD CONSTRAINT "FK_4b1fea44602b36312265dca5036" FOREIGN KEY ("actionUserId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+    await queryRunner.query(`ALTER TABLE "posts_tags_tags" ADD CONSTRAINT "FK_cf364c7e6905b285c4b55a00343" FOREIGN KEY ("postsId") REFERENCES "posts"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+    await queryRunner.query(`ALTER TABLE "posts_tags_tags" ADD CONSTRAINT "FK_ce163a967812183a51b044f7404" FOREIGN KEY ("tagsId") REFERENCES "tags"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
@@ -307,5 +321,19 @@ export class Migration1737131867489 implements MigrationInterface {
     );
     await queryRunner.query(`ALTER TABLE "messages" DROP COLUMN "edited"`);
     await queryRunner.query(`DROP TABLE "message_ratings"`);
+    await queryRunner.query(`ALTER TABLE "posts_tags_tags" DROP CONSTRAINT "FK_ce163a967812183a51b044f7404"`);
+    await queryRunner.query(`ALTER TABLE "posts_tags_tags" DROP CONSTRAINT "FK_cf364c7e6905b285c4b55a00343"`);
+    await queryRunner.query(`ALTER TABLE "user_actions" DROP CONSTRAINT "FK_4b1fea44602b36312265dca5036"`);
+    await queryRunner.query(`ALTER TABLE "user_actions" DROP CONSTRAINT "FK_e65a8053e5b02e0b89947b6bac9"`);
+    await queryRunner.query(`ALTER TABLE "posts" DROP CONSTRAINT "FK_ae05faaa55c866130abef6e1fee"`);
+    await queryRunner.query(`ALTER TABLE "photos" DROP CONSTRAINT "FK_74da4f305b050f7d27c73b04263"`);
+    await queryRunner.query(`DROP INDEX "public"."IDX_ce163a967812183a51b044f740"`);
+    await queryRunner.query(`DROP INDEX "public"."IDX_cf364c7e6905b285c4b55a0034"`);
+    await queryRunner.query(`DROP TABLE "posts_tags_tags"`);
+    await queryRunner.query(`DROP TABLE "user_actions"`);
+    await queryRunner.query(`DROP TABLE "posts"`);
+    await queryRunner.query(`DROP TYPE "public"."posts_visibility_enum"`);
+    await queryRunner.query(`DROP TABLE "tags"`);
+    await queryRunner.query(`DROP TABLE "photos"`);
   }
 }

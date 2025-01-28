@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.media.MediaRecorder;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Size;
@@ -58,6 +60,7 @@ import com.vapid_software.prodigy.models.MessageRatingResponseModel;
 import com.vapid_software.prodigy.models.UserModel;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -84,9 +87,15 @@ public class ChatFragment extends BaseExtraFragment {
     private List<AddonData> addons, selectedAddons = new ArrayList<>();
     private int page = 1;
     private int optionsMessagePosition = -1;
+    private MediaRecorder recorder;
+    private Runnable recordRunnable;
+    private Handler recordHandler;
+    private TextView recordTime;
+    private String recordFileName;
+    private int recordedTime;
     private int total;
-    private View optionsWrp, bottomWrp, topMainWrp, topOptionsWrp, topOptionsClose;
-    private MessageModel replyMessage;
+    private View optionsWrp, bottomWrp, topMainWrp, topOptionsWrp, topOptionsClose, mic;
+    private MessageModel replyMessage, editMessage;
     private View optionsDeleteWrp, optionsDelete, optionsForward, optionsReply, optionsEmoji, optionsEdit, optionsEditWrp;
     private TextView replyName, replyBody, currentDate;
     private final static int SWIPE_ANIMATION_OFFSET = 100;
@@ -997,6 +1006,9 @@ public class ChatFragment extends BaseExtraFragment {
         if(requestCode == Defs.PermissionCode.GALLERY_CODE && grantResults.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
             selectFromGallery();
         }
+        else if(requestCode == Defs.PermissionCode.RECORD_AUDIO_CODE && grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            record();
+        }
     }
 
     private void selectFromGallery() {
@@ -1443,8 +1455,72 @@ public class ChatFragment extends BaseExtraFragment {
     };
 
     private View.OnClickListener optionsEditClicked = (View v) -> {
+        hideMessageOptions(() -> {
+            int pos = optionsMessagePosition;
+            optionsMessagePosition = -1;
+            rv.getAdapter().notifyItemChanged(pos);
+            editMessage = messages.get(pos);
+            if(editMessage.getBody() != null) {
+                message.setText(editMessage.getBody());
+            }
+            if(editMessage.getParent() != null) {
 
+            }
+            if(editMessage.getAddons() != null) {
+
+            }
+        });
     };
+
+    private View.OnClickListener avatarClicked = (View v) -> {
+        UserInfoFragment fragment = new UserInfoFragment();
+        fragment.setUser(currentUser);
+        activity.loadExtra(fragment, true);
+    };
+
+    private View.OnClickListener micClicked = (View v) -> {
+        if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, Defs.PermissionCode.RECORD_AUDIO_CODE);
+        }
+        else {
+            record();
+        }
+    };
+
+    private void record() {
+        recordHandler = new Handler();
+        recordRunnable = () -> {
+            if(recordedTime == 3600) {
+                stopRecord();
+                return;
+            }
+            recordedTime++;
+            int minutes = recordedTime % 3600 / 60;
+            int secs = recordedTime % 60;
+            recordHandler.postDelayed(recordRunnable, 1000);
+        };
+        recorder = new MediaRecorder();
+        recorder = new MediaRecorder();
+        recordFileName = getActivity().getExternalCacheDir().getAbsolutePath() + "/recording.3gp";
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        recorder.setOutputFile(recordFileName);
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        try {
+            recorder.prepare();
+            recorder.start();
+            recordTime.setText(String.format("%02d:%02d", 0, 0));
+            recordHandler.postDelayed(recordRunnable, 1000);
+        }
+        catch (IOException e) {
+            Toast.makeText(getContext(), getResources().getString(R.string.error_has_occurred), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
+    private void stopRecord() {
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -1459,6 +1535,7 @@ public class ChatFragment extends BaseExtraFragment {
         replyName = root.findViewById(R.id.reply_name);
         replyWrp = root.findViewById(R.id.reply_wrp);
         currentDate = root.findViewById(R.id.current_date);
+        mic = root.findViewById(R.id.mic);
         optionsEdit = root.findViewById(R.id.options_edit);
         optionsEditWrp = root.findViewById(R.id.options_edit_wrp);
         topMainWrp = root.findViewById(R.id.top_main_wrp);
@@ -1490,6 +1567,8 @@ public class ChatFragment extends BaseExtraFragment {
         buttonDown.setOnClickListener(buttonDownClicked);
         optionsEmoji.setOnClickListener(optionsEmojiClicked);
         optionsEdit.setOnClickListener(optionsEditClicked);
+        avatar.setOnClickListener(avatarClicked);
+        mic.setOnClickListener(micClicked);
         init();
         return root;
     }

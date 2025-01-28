@@ -304,6 +304,7 @@ public class ChatsFragment extends BaseExtraFragment {
         activity.runOnUiThread(() -> {
             page = 1;
             chats = null;
+            rv.setAdapter(null);
             load();
         });
     };
@@ -342,6 +343,7 @@ public class ChatsFragment extends BaseExtraFragment {
                 searchWrp.setVisibility(View.GONE);
                 page = 1;
                 chats = null;
+                rv.setAdapter(null);
                 load();
             });
             activity.loadExtra(fragment, true);

@@ -11,7 +11,8 @@ import { UserEnitity } from '@/entities/UserEntity';
 @Module({
   providers: [GlobalCronService, GlobalCronEmitterService],
   exports: [GlobalCronService, GlobalCronEmitterService],
-  imports: [TypeOrmModule.forFeature([
+  imports: [
+    TypeOrmModule.forFeature([
       BookingEntity,
       ServiceEntity,
       NotificationEntity,

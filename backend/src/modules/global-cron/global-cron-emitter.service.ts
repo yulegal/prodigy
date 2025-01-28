@@ -20,9 +20,13 @@ export class GlobalCronEmitterService {
 
   @Cron(CronExpression.EVERY_10_MINUTES)
   async handlePaymentApproach() {
-    this.logger.log(`${GlobalCronEmitterService.name} handlePaymentApproach start`);
+    this.logger.log(
+      `${GlobalCronEmitterService.name} handlePaymentApproach start`,
+    );
     this.emitter.emit(GLOBAL_CRON_EVENTS.HANDLE_PAYMENT_APPROACH);
-    this.logger.log(`${GlobalCronEmitterService.name} handlePaymentApproach end`);
+    this.logger.log(
+      `${GlobalCronEmitterService.name} handlePaymentApproach end`,
+    );
   }
 
   @Cron(CronExpression.EVERY_10_MINUTES)
@@ -34,7 +38,9 @@ export class GlobalCronEmitterService {
 
   @Cron(CronExpression.EVERY_10_MINUTES)
   async handleTrialApproach() {
-    this.logger.log(`${GlobalCronEmitterService.name} handleTrialApproach start`);
+    this.logger.log(
+      `${GlobalCronEmitterService.name} handleTrialApproach start`,
+    );
     this.emitter.emit(GLOBAL_CRON_EVENTS.HANDLE_TRIAL_APPROACH);
     this.logger.log(`${GlobalCronEmitterService.name} handleTrialApproach end`);
   }

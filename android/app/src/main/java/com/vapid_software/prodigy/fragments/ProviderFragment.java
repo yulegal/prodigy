@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -152,7 +153,7 @@ public class ProviderFragment extends BaseExtraFragment {
         if(requestCode == Defs.PermissionCode.GALLERY_CODE && grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             selectImage();
         }
-        else if(requestCode == Defs.PermissionCode.LOCATION_CODE) {
+        else if(requestCode == Defs.PermissionCode.LOCATION_CODE && grantResults.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
             selectAddress();
         }
     }

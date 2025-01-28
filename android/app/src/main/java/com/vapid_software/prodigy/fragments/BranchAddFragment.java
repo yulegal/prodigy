@@ -53,7 +53,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class BranchAddFragment extends Fragment {
+public class BranchAddFragment extends BaseExtraFragment {
     private View close, extraWrp, usersWrp, addAddress, addressWrp;
     private RecyclerView usersRv;
     private EditText address, session;
@@ -61,6 +61,7 @@ public class BranchAddFragment extends Fragment {
     private TextView title, error;
     private Spinner unit;
     private ServiceModel service;
+    private UserModel loggedUser;
     private BranchModel currentBranch;
     private boolean clickable = true;
     private boolean addUserClickable = true;
@@ -152,6 +153,7 @@ public class BranchAddFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         activity = (CoreActivity) context;
+        loggedUser = activity.getLoggedUser();
     }
 
     public void setService(ServiceModel service) {
@@ -451,7 +453,14 @@ public class BranchAddFragment extends Fragment {
         return root;
     }
 
-    private void init() {
+    protected void init() {
+        if(!loggedUser.getRole().getId().equals(Defs.Role.HELPER)) {
+            close.setOnClickListener(closeClicked);
+        }
+        else {
+            back = close;
+        }
+        super.init();
         if(service.getCategory().getType().equals(Defs.CategoryType.CAFE)) {
             extraWrp.setVisibility(View.VISIBLE);
             extraFragment = new CafeServiceExtraFragment();
@@ -499,10 +508,13 @@ public class BranchAddFragment extends Fragment {
             button.setText(getContext().getResources().getString(R.string.update_branch_btn));
             galleryBtn.setVisibility(View.VISIBLE);
         }
-        close.setOnClickListener(closeClicked);
         addUsersBtn.setOnClickListener(addUserBtnClicked);
         scheduleBtn.setOnClickListener(scheduleBtnClicked);
         button.setOnClickListener(buttonClicked);
         addAddress.setOnClickListener(addAddressClicked);
+        if(loggedUser.getRole().getId().equals(Defs.Role.HELPER)) {
+            addUsersBtn.setVisibility(View.GONE);
+            usersWrp.setVisibility(View.GONE);
+        }
     }
 }

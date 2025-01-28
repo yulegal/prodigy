@@ -79,7 +79,7 @@ export const PAYMENT_DATE_APPROACH_NOTIFICATION = {
   body: {
     en: 'Your payment date will be on %date, please make sure you have enough funds on the balance to continue using service',
     ru: 'День оплаты будет %date, убедитесь что у вас достаточно средств на балансе чтобы использовать сервис',
-  }
+  },
 };
 
 export const SERVICE_BLOCKED_NOTIFICATIONS = {
@@ -90,7 +90,7 @@ export const SERVICE_BLOCKED_NOTIFICATIONS = {
   body: {
     en: 'Your service has been blocked due to insufficient funds on the balance. Fill in the balance to continue using your service',
     ru: 'Ваш сервис был заблокирован из-зи нехватки средств на балансе. Пополните баланс чтобы продолжить пользование',
-  }
+  },
 };
 
 export const TRIAL_PERIOD_APPROACHES_NOTIFICATION = {
@@ -101,7 +101,7 @@ export const TRIAL_PERIOD_APPROACHES_NOTIFICATION = {
   body: {
     en: 'Your trial period ends on %date',
     ru: 'Ваш пробный период заканчивается %date',
-  }
+  },
 };
 
 export const BALANCE_FEE_CHARGED_NOTIFICATION = {
@@ -112,5 +112,5 @@ export const BALANCE_FEE_CHARGED_NOTIFICATION = {
   body: {
     en: 'A monthly fee of %fee has been charged from your balance',
     ru: 'С вашего баланса была списана ежемесячная оплата в размере %fee',
-  }
+  },
 };

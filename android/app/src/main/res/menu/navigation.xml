@@ -3,6 +3,10 @@
     <item android:title="@string/common_menu_title">
         <menu>
             <item
+                android:title="@string/my_profile_title"
+                android:id="@+id/nav_profile"
+                android:icon="@drawable/profile"/>
+            <item
                 android:title="@string/my_contacts_title"
                 android:icon="@drawable/my_contacts"
                 android:id="@+id/nav_my_contacts"/>
@@ -55,7 +59,7 @@
     <item android:title="@string/for_helpers_title">
         <menu>
             <item
-                android:title="@string/branches_title"
+                android:title="@string/my_branches_title"
                 android:id="@+id/nav_branches"
                 android:icon="@drawable/branches"/>
         </menu>

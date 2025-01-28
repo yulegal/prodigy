@@ -94,4 +94,8 @@ export interface WorkSchedule {
 export interface Address {
     address: string;
     url?: string;
+    location?: {
+        latitude: number,
+        longitude: number,
+    }
 }

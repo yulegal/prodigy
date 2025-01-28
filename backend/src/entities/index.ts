@@ -10,9 +10,13 @@ import { GalleryEntity } from './GalleryEntity';
 import { MessageEntity } from './MessageEntity';
 import { MessageRatingEntity } from './MessageRatingEntity';
 import { NotificationEntity } from './NotificationEntity';
+import { PhotoEntity } from './PhotoEntity';
+import { PostEntity } from './PostEntity';
 import { RoleEntity } from './RoleEntity';
 import { ServiceEntity } from './ServiceEntity';
 import { ServiceRatingEntity } from './ServiceRatingEntity';
+import { TagEntity } from './TagEntity';
+import { UserActionEntity } from './UserActionEntity';
 import { UserEnitity } from './UserEntity';
 
 export const entities = [
@@ -32,4 +36,8 @@ export const entities = [
   MessageEntity,
   ChatEntity,
   MessageRatingEntity,
+  UserActionEntity,
+  PostEntity,
+  PhotoEntity,
+  TagEntity,
 ];

@@ -170,4 +170,6 @@ public interface ApiService {
     Call<MessageModel> forwardMessage(@Body()ForwardMessageModel model);
     @POST("message/toggle-rating")
     Call<MessageRatingResponseModel> toggleMessageRating(@Body()BaseData data);
+    @GET("branch/get-user-branch")
+    Call<BranchModel> getUserBranch();
 }

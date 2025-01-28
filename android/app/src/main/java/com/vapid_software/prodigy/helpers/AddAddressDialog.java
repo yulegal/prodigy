@@ -33,6 +33,7 @@ public class AddAddressDialog extends Dialog {
     private boolean canAddUrl = true;
     private RichLinkViewQkopy rl;
     private AddressModel address;
+    private AddressModel.Location location;
     private OnAddressAddedListener onAddressAddedListener;
 
     public interface OnAddressAddedListener {
@@ -67,10 +68,19 @@ public class AddAddressDialog extends Dialog {
                 providerClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
                         .addOnCompleteListener((Task<Location> task) -> {
                             if(task.isSuccessful()) {
-                                Log.i("long", String.valueOf(task.getResult().getLongitude()));
-                                Log.i("lat", String.valueOf(task.getResult().getLatitude()));
+                                if(location == null) {
+                                    location = new AddressModel.Location();
+                                }
+                                location.setLatitude(task.getResult().getLatitude());
+                                location.setLongitude(task.getResult().getLongitude());
+                            }
+                            else {
+                                Toast.makeText(getContext(), getContext().getResources().getString(R.string.error_has_occurred), Toast.LENGTH_LONG).show();
                             }
                         });
+            }
+            else {
+                location = null;
             }
         });
 
@@ -112,7 +122,7 @@ public class AddAddressDialog extends Dialog {
                     public void onSuccess(boolean b) {
                         if(b) {
                             if(onAddressAddedListener != null) {
-                                onAddressAddedListener.onAddressAdded(rl.getMetaData(), new AddressModel(addressValue, urlValue));
+                                onAddressAddedListener.onAddressAdded(rl.getMetaData(), new AddressModel(addressValue, urlValue, location));
                             }
                         }
                         else {
@@ -131,7 +141,7 @@ public class AddAddressDialog extends Dialog {
             }
             else {
                 if(onAddressAddedListener != null) {
-                    onAddressAddedListener.onAddressAdded(null, new AddressModel(addressValue, null));
+                    onAddressAddedListener.onAddressAdded(null, new AddressModel(addressValue, null, location));
                 }
                 dismiss();
             }
@@ -148,6 +158,9 @@ public class AddAddressDialog extends Dialog {
             }
             if(this.address.getAddress() != null) {
                 address.setText(this.address.getAddress());
+            }
+            if(this.address.getLocation() != null) {
+                cb.setChecked(true);
             }
         }
 
