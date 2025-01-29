@@ -50,6 +50,8 @@ export class MessageService {
     files?: Express.Multer.File[],
   ) {
     this.logger.log(`${MessageService.name} create start`);
+    console.log('dto', dto)
+    console.log('ile', files)
     let chat = await this.chatRepo.findOne({
       where: [
         {
@@ -92,7 +94,7 @@ export class MessageService {
         relations: MESSAGE_RELATIONS,
       });
     if (dto.body) message.body = dto.body;
-    if (files) {
+    if (files?.length) {
       message.addons = [];
       for (const file of files) {
         const ext = getFileExtensionByName(file.originalname);
@@ -123,7 +125,7 @@ export class MessageService {
     if (!message) throw new BadRequestException(error_message_not_found);
     if (message.from.id != currentUser.id) throw new ForbiddenException();
     message.body = dto.body ?? null;
-    if (files) {
+    if (files?.length) {
       message.addons?.forEach((v) =>
         removeFile(this.configService.getAddonsFilesPath() + '/' + v),
       );
@@ -141,7 +143,7 @@ export class MessageService {
     const mapped = MessageMapper.map(result);
     await this.socketService.notifyMessageEdited(mapped);
     this.logger.log(`${MessageService.name} update end`);
-    return;
+    return mapped;
   }
 
   async deleteById(id: string, currentUser: UserDto) {

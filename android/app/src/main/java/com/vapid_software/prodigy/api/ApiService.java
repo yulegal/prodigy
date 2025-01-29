@@ -158,6 +158,15 @@ public interface ApiService {
             @Part("parentId") RequestBody parentId,
             @Part MultipartBody.Part files[]
     );
+    @Multipart
+    @PUT("message")
+    Call<MessageModel> updateMessage(
+            @Part("id") RequestBody id,
+            @Part("toId") RequestBody toId,
+            @Part("body") RequestBody body,
+            @Part("parentId") RequestBody parentId,
+            @Part MultipartBody.Part files[]
+    );
     @POST("chat/filter")
     Call<FilterResponse<ChatModel>> filterChats(@Body() FilterQueryOptions options);
     @DELETE("message/{id}")

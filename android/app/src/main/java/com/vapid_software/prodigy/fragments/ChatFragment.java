@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
@@ -31,9 +32,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -91,6 +94,7 @@ public class ChatFragment extends BaseExtraFragment {
     private Runnable recordRunnable;
     private Handler recordHandler;
     private TextView recordTime;
+    private View recordIcon, recordWrp, recordStop;
     private String recordFileName;
     private int recordedTime;
     private int total;
@@ -107,10 +111,10 @@ public class ChatFragment extends BaseExtraFragment {
         private OnSwipeTouchListener onSwipeTouchListener;
         private int position;
 
-        private class CustomViewHolder extends RecyclerView.ViewHolder {
+        private class MediaViewHolder extends RecyclerView.ViewHolder {
             private ImageView image;
             private View play;
-            public CustomViewHolder(View v) {
+            public MediaViewHolder(View v) {
                 super(v);
                 play = v.findViewById(R.id.play);
                 image = v.findViewById(R.id.image);
@@ -125,6 +129,52 @@ public class ChatFragment extends BaseExtraFragment {
             }
         }
 
+        private class AudioViewHolder extends RecyclerView.ViewHolder {
+            private ImageView play;
+            private ProgressBar pb;
+            private TextView time, currentTime;
+            public AudioViewHolder(View v) {
+                super(v);
+                play = v.findViewById(R.id.play);
+                pb = v.findViewById(R.id.pb);
+                time = v.findViewById(R.id.time);
+                currentTime = v.findViewById(R.id.current_time);
+                play.setOnClickListener((View v1) -> {
+                    MediaPlayer player = new MediaPlayer();
+                    String url = String.join("/", ApiBuilder.ADDONS_PATH, payload.get(getAdapterPosition()));
+                    player.setOnCompletionListener((MediaPlayer mp) -> {
+                        mp.release();
+                        play.setImageResource(R.drawable.play);
+                    });
+                    try {
+                        player.setDataSource(url);
+                        player.prepare();
+                        player.start();
+                        play.setImageResource(R.drawable.pause);
+                    }
+                    catch(Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+
+            public ProgressBar getPb() {
+                return pb;
+            }
+
+            public TextView getTime() {
+                return time;
+            }
+
+            public ImageView getPlay() {
+                return play;
+            }
+
+            public TextView getCurrentTime() {
+                return currentTime;
+            }
+        }
+
         public MediaAdapter(List<String> payload, int position) {
             this.payload = payload;
             this.position = position;
@@ -133,8 +183,8 @@ public class ChatFragment extends BaseExtraFragment {
         @NonNull
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View root = getLayoutInflater().inflate(R.layout.message_row_media, parent, false);
-            CustomViewHolder holder = new CustomViewHolder(root);
+            View root = getLayoutInflater().inflate(viewType == 1 ? R.layout.message_row_media_audio : R.layout.message_row_media, parent, false);
+            RecyclerView.ViewHolder holder = viewType == 1 ? new AudioViewHolder(root) : new MediaViewHolder(root);
             root.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
                 @Override
                 public void onSwipeLeft() {
@@ -152,7 +202,9 @@ public class ChatFragment extends BaseExtraFragment {
 
                 @Override
                 public void onClick(View v) {
-                    openMedia(holder.getAdapterPosition());
+                    if(viewType == 0) {
+                        openMedia(holder.getAdapterPosition());
+                    }
                 }
 
                 @Override
@@ -171,18 +223,25 @@ public class ChatFragment extends BaseExtraFragment {
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder h, int position) {
-            CustomViewHolder holder = (CustomViewHolder) h;
-            String url = String.join("/", ApiBuilder.ADDONS_PATH, payload.get(holder.getAdapterPosition()));
+            String url = String.join("/", ApiBuilder.ADDONS_PATH, payload.get(h.getAdapterPosition()));
             String mime = Utils.getMimeType(url);
-            if(mime.startsWith("image")) {
-                Picasso.get().load(url).into(holder.getImage());
-            }
-            else if(mime.startsWith("video")) {
-                if(!mime.endsWith("3gpp")) {
+            if(!mime.endsWith("3gpp")) {
+                MediaViewHolder holder = (MediaViewHolder) h;
+                if(mime.startsWith("image")) {
+                    Picasso.get().load(url).into(holder.getImage());
+                }
+                if(mime.startsWith("video")) {
                     Glide.with(getContext()).load(url).into(holder.getImage());
                     holder.getPlay().setVisibility(View.VISIBLE);
                 }
             }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            String url = String.join("/", ApiBuilder.ADDONS_PATH, payload.get(position));
+            String mime = Utils.getMimeType(url);
+            return mime.endsWith("3gpp") ? 1 : 0;
         }
 
         private void openMedia(int current) {
@@ -891,7 +950,7 @@ public class ChatFragment extends BaseExtraFragment {
             AddonData uri = selectedAddons.get(position);
             try {
                 if(uri.getMime().startsWith("image")) {
-                    holder.getImage().setImageBitmap(Utils.decodeBitmap(getActivity().getContentResolver(), uri.getUri()));
+                    holder.getImage().setImageBitmap(Utils.decodeBitmap(activity.getContentResolver(), uri.getUri()));
                 }
                 else if(uri.getMime().startsWith("video")) {
                     Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(new File(uri.getUri().getPath()), new Size(640, 480), null);
@@ -920,31 +979,44 @@ public class ChatFragment extends BaseExtraFragment {
         builder.setResponseListener(new ApiBuilder.ResponseListener<MessageModel>() {
             @Override
             public void onResponse(Call<MessageModel> call, Response<MessageModel> response) {
-                if(response.code() == 201) {
-                    if(messages == null) {
-                        messages = new ArrayList<>();
-                    }
-                    messages.add(response.body());
-                    ++total;
-                    if(rv.getLayoutManager() == null) {
-                        rv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-                    }
-                    if(rv.getAdapter() == null) {
-                        rv.setAdapter(new Adapter());
+                int code = response.code();
+                if(code == 201 || code == 200) {
+                    if(code == 201) {
+                        if(messages == null) {
+                            messages = new ArrayList<>();
+                        }
+                        messages.add(response.body());
+                        ++total;
+                        if(rv.getLayoutManager() == null) {
+                            rv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+                        }
+                        if(rv.getAdapter() == null) {
+                            rv.setAdapter(new Adapter());
+                        }
+                        else {
+                            rv.getAdapter().notifyItemInserted(messages.size() - 1);
+                        }
+                        message.setText("");
+                        if(selectedAddons.size() != 0) {
+                            selectedAddons.clear();
+                            selectedAddonsRv.getAdapter().notifyDataSetChanged();
+                        }
+                        if(replyMessage != null) {
+                            replyMessage = null;
+                            replyWrp.setVisibility(View.GONE);
+                        }
+                        rv.scrollToPosition(messages.size() - 1);
                     }
                     else {
-                        rv.getAdapter().notifyItemInserted(messages.size() - 1);
-                    }
-                    message.setText("");
-                    if(selectedAddons.size() != 0) {
+                        int pos = optionsMessagePosition;
+                        optionsMessagePosition = -1;
+                        editMessage = null;
+                        messages.set(pos, response.body());
+                        message.setText("");
                         selectedAddons.clear();
-                        selectedAddonsRv.getAdapter().notifyDataSetChanged();
+                        mic.setVisibility(View.VISIBLE);
+                        rv.getAdapter().notifyItemChanged(pos);
                     }
-                    if(replyMessage != null) {
-                        replyMessage = null;
-                        replyWrp.setVisibility(View.GONE);
-                    }
-                    rv.scrollToPosition(messages.size() - 1);
                 }
                 else {
                     Toast.makeText(getContext(), getContext().getResources().getString(R.string.error_has_occurred), Toast.LENGTH_LONG).show();
@@ -952,26 +1024,37 @@ public class ChatFragment extends BaseExtraFragment {
             }
         });
         builder.setOnInitializedListener(() -> {
-            List<MultipartBody.Part> addons = new ArrayList<>();
+            MultipartBody.Part[] parts = null;
             if(selectedAddons.size() != 0) {
+                List<MultipartBody.Part> addons = new ArrayList<>();
                 for(int i = 0;i < selectedAddons.size(); ++i) {
                     File file = new File(selectedAddons.get(i).getUri().getPath());
                     RequestBody rf = RequestBody.create(MultipartBody.FORM, file);
                     addons.add(MultipartBody.Part.createFormData("files", file.getName(), rf));
                 }
+                parts = new MultipartBody.Part[addons.size()];
+                addons.toArray(parts);
             }
-            MultipartBody.Part[] parts = new MultipartBody.Part[addons.size()];
-            addons.toArray(parts);
             RequestBody parentId = null;
             if(replyMessage != null) {
                 parentId = RequestBody.create(MultipartBody.FORM, replyMessage.getId());
             }
-            builder.send(builder.getApi(ApiService.class).sendMessage(
-                    RequestBody.create(MultipartBody.FORM, currentUser.getId()),
-                    messageValue.isEmpty() ? null : RequestBody.create(MultipartBody.FORM, messageValue),
-                    parentId,
-                    parts
-            ));
+            builder.send(
+                    editMessage == null ?
+                            builder.getApi(ApiService.class).sendMessage(
+                                    RequestBody.create(MultipartBody.FORM, currentUser.getId()),
+                                    messageValue.isEmpty() ? null : RequestBody.create(MultipartBody.FORM, messageValue),
+                                    parentId,
+                                    parts
+                            ) :
+                            builder.getApi(ApiService.class).updateMessage(
+                                    RequestBody.create(MultipartBody.FORM, editMessage.getId()),
+                                    RequestBody.create(MultipartBody.FORM, currentUser.getId()),
+                                    messageValue.isEmpty() ? null : RequestBody.create(MultipartBody.FORM, messageValue),
+                                    parentId,
+                                    parts
+                            )
+            );
         });
     };
 
@@ -1456,18 +1539,10 @@ public class ChatFragment extends BaseExtraFragment {
 
     private View.OnClickListener optionsEditClicked = (View v) -> {
         hideMessageOptions(() -> {
-            int pos = optionsMessagePosition;
-            optionsMessagePosition = -1;
-            rv.getAdapter().notifyItemChanged(pos);
-            editMessage = messages.get(pos);
+            editMessage = messages.get(optionsMessagePosition);
+            mic.setVisibility(View.GONE);
             if(editMessage.getBody() != null) {
                 message.setText(editMessage.getBody());
-            }
-            if(editMessage.getParent() != null) {
-
-            }
-            if(editMessage.getAddons() != null) {
-
             }
         });
     };
@@ -1475,6 +1550,9 @@ public class ChatFragment extends BaseExtraFragment {
     private View.OnClickListener avatarClicked = (View v) -> {
         UserInfoFragment fragment = new UserInfoFragment();
         fragment.setUser(currentUser);
+        fragment.setOnBackPressedListener(() -> {
+            activity.getSupportFragmentManager().popBackStack();
+        });
         activity.loadExtra(fragment, true);
     };
 
@@ -1497,6 +1575,7 @@ public class ChatFragment extends BaseExtraFragment {
             recordedTime++;
             int minutes = recordedTime % 3600 / 60;
             int secs = recordedTime % 60;
+            recordTime.setText(String.format("%02d:%02d", minutes, secs));
             recordHandler.postDelayed(recordRunnable, 1000);
         };
         recorder = new MediaRecorder();
@@ -1516,11 +1595,49 @@ public class ChatFragment extends BaseExtraFragment {
             Toast.makeText(getContext(), getResources().getString(R.string.error_has_occurred), Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
+        recordWrp.setVisibility(View.VISIBLE);
+        bottomWrp.setVisibility(View.GONE);
+        optionsWrp.setVisibility(View.GONE);
+        recordIcon.setAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.record_blink));
     }
 
     private void stopRecord() {
-
+        if(recordedTime > 0) {
+            ApiBuilder builder = ApiBuilder.getInstance(getContext());
+            builder.setResponseListener(new ApiBuilder.ResponseListener<MessageModel>() {
+                @Override
+                public void onResponse(Call<MessageModel> call, Response<MessageModel> response) {
+                    Log.i("res", String.valueOf(response.body()));
+                }
+            });
+            MultipartBody.Part addons[] = new MultipartBody.Part[1];
+            File file = new File(recordFileName);
+            RequestBody rf = RequestBody.create(MultipartBody.FORM, file);
+            addons[0] = MultipartBody.Part.createFormData("files", file.getName(), rf);
+            builder.setOnInitializedListener(() -> {
+                builder.send(builder.getApi(ApiService.class).sendMessage(
+                        RequestBody.create(MultipartBody.FORM, currentUser.getId()),
+                        null,
+                        null,
+                        addons
+                ));
+            });
+        }
+        recordIcon.clearAnimation();
+        recordHandler.removeCallbacks(recordRunnable);
+        recorder.stop();
+        recorder.release();
+        recorder = null;
+        bottomWrp.setVisibility(View.VISIBLE);
+        optionsWrp.setVisibility(View.GONE);
+        recordWrp.setVisibility(View.GONE);
+        recordedTime = 0;
+        recordTime.setText("");
     }
+
+    private View.OnClickListener stopRecordClicked = (View v) -> {
+        stopRecord();
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -1528,11 +1645,15 @@ public class ChatFragment extends BaseExtraFragment {
         View root = inflater.inflate(R.layout.fragment_chat, container, false);
         back = root.findViewById(R.id.back);
         name = root.findViewById(R.id.name);
+        recordIcon = root.findViewById(R.id.record_icon);
         buttonDown = root.findViewById(R.id.button_down);
+        recordStop = root.findViewById(R.id.stop);
         replyBody = root.findViewById(R.id.reply_body);
+        recordTime = root.findViewById(R.id.recorded_time);
         newCount = root.findViewById(R.id.new_count);
         replyClose = root.findViewById(R.id.reply_close);
         replyName = root.findViewById(R.id.reply_name);
+        recordWrp = root.findViewById(R.id.record_wrp);
         replyWrp = root.findViewById(R.id.reply_wrp);
         currentDate = root.findViewById(R.id.current_date);
         mic = root.findViewById(R.id.mic);
@@ -1569,6 +1690,7 @@ public class ChatFragment extends BaseExtraFragment {
         optionsEdit.setOnClickListener(optionsEditClicked);
         avatar.setOnClickListener(avatarClicked);
         mic.setOnClickListener(micClicked);
+        recordStop.setOnClickListener(stopRecordClicked);
         init();
         return root;
     }

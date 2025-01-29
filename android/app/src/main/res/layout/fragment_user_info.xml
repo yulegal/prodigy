@@ -27,7 +27,7 @@
                     app:layout_scrollFlags="scroll|exitUntilCollapsed"
                     android:background="#1d2129"
                     app:contentScrim="#000"
-                    android:layout_height="300dp">
+                    android:layout_height="wrap_content">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -55,8 +55,8 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/arial"
                             android:textColor="#fff"
-                            android:text="Yuri"
                             android:layout_marginTop="10dp"
+                            android:id="@+id/name"
                             android:layout_marginBottom="15dp"
                             android:textSize="20dp"/>
 
@@ -71,6 +71,7 @@
                             android:layout_height="wrap_content"
                             android:padding="15dp"
                             android:textSize="13dp"
+                            android:id="@+id/status"
                             android:background="@drawable/profile_status"
                             android:gravity="center_vertical"
                             android:textColor="#fff"
@@ -121,6 +122,7 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/arial"
                                 android:textSize="14dp"
+                                android:id="@+id/edit"
                                 android:text="@string/edit"
                                 android:textColor="#fff"/>
 

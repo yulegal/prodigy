@@ -211,4 +211,11 @@ public class Defs {
     public static class ChatOptions {
         public final static String DELETE = "DELETE";
     }
+
+    public static class ProfileOptionActions {
+        public final static String CALL = "call";
+        public final static String MUTE = "mute";
+        public final static String BLOCK = "block";
+        public final static String SEARCH = "search";
+    }
 }

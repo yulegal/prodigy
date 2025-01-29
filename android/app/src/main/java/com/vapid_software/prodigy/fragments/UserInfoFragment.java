@@ -21,41 +21,46 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
+import com.squareup.picasso.Picasso;
 import com.vapid_software.prodigy.CoreActivity;
 import com.vapid_software.prodigy.R;
+import com.vapid_software.prodigy.api.ApiBuilder;
 import com.vapid_software.prodigy.data.OptionsData;
+import com.vapid_software.prodigy.helpers.Defs;
 import com.vapid_software.prodigy.models.UserModel;
 
-public class UserInfoFragment extends Fragment {
-    private UserModel user;
-    private View back, backText;
+public class UserInfoFragment extends BaseExtraFragment {
+    private UserModel user, loggedUser;
+    private View backText, editBtn;
     private CoreActivity activity;
     private RecyclerView optionsRv;
     private TabLayout tabLayout;
     private ViewPager pager;
+    private TextView name, status;
+    private ImageView avatar;
     private String[] options;
 
     private class Adapter extends RecyclerView.Adapter {
-        private OptionsData options[] = new OptionsData[]{
+        private final OptionsData options[] = new OptionsData[]{
                 new OptionsData(
                         getContext().getResources().getString(R.string.call_option),
                         R.drawable.call,
-                        "call"
+                        Defs.ProfileOptionActions.CALL
                 ),
                 new OptionsData(
                         getContext().getResources().getString(R.string.mute_option),
                         R.drawable.mute,
-                        "mute"
+                        Defs.ProfileOptionActions.MUTE
                 ),
                 new OptionsData(
                         getContext().getResources().getString(R.string.block_option),
                         R.drawable.block,
-                        "block"
+                        Defs.ProfileOptionActions.BLOCK
                 ),
                 new OptionsData(
                         getContext().getResources().getString(R.string.search_option),
                         R.drawable.search,
-                        "search"
+                        Defs.ProfileOptionActions.SEARCH
                 )
         };
         private OptionsData.OnOptionsDataSelectedListener onOptionsDataSelectedListener;
@@ -99,7 +104,7 @@ public class UserInfoFragment extends Fragment {
             OptionsData data = options[position];
             holder.getName().setText(data.getText());
             holder.getIcon().setImageResource(data.getIcon());
-            if(data.getAction().equals("block")) {
+            if(data.getAction().equals(Defs.ProfileOptionActions.BLOCK)) {
                 holder.getName().setTextColor(Color.parseColor("#bb0000"));
                 holder.getIcon().setColorFilter(Color.parseColor("#bb0000"));
             }
@@ -148,14 +153,15 @@ public class UserInfoFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         activity = (CoreActivity) context;
+        loggedUser = activity.getLoggedUser();
     }
 
     public void setUser(UserModel user) {
         this.user = user;
     }
 
-    private View.OnClickListener backClicked = (View v) -> {
-        activity.getSupportFragmentManager().popBackStack();
+    private View.OnClickListener editBtnClicked = (View v) -> {
+
     };
 
     @Override
@@ -166,22 +172,51 @@ public class UserInfoFragment extends Fragment {
         tabLayout = root.findViewById(R.id.tab_layout);
         backText = root.findViewById(R.id.back_text);
         pager = root.findViewById(R.id.pager);
+        avatar = root.findViewById(R.id.avatar);
+        editBtn = root.findViewById(R.id.edit);
+        status = root.findViewById(R.id.status);
+        name = root.findViewById(R.id.name);
         optionsRv = root.findViewById(R.id.options_rv);
-        back.setOnClickListener(backClicked);
-        backText.setOnClickListener(backClicked);
+        editBtn.setOnClickListener(editBtnClicked);
         init();
         return root;
     }
 
-    private void init() {
+    protected void init() {
+        super.init();
+        backText.setOnClickListener(backOnclickListener);
         options = getContext().getResources().getStringArray(R.array.profile_options);
         pager.setAdapter(new TabAdapter(activity.getSupportFragmentManager()));
         tabLayout.setupWithViewPager(pager);
         optionsRv.setLayoutManager(new GridLayoutManager(getContext(), 4));
         Adapter optionsAdapter = new Adapter();
         optionsAdapter.setOnOptionsDataSelectedListener((OptionsData data) -> {
-            Log.i("action", data.getAction());
+            if(data.getAction().equals(Defs.ProfileOptionActions.CALL)) {
+
+            }
+            else if(data.getAction().equals(Defs.ProfileOptionActions.MUTE)) {
+
+            }
+            else if(data.getAction().equals(Defs.ProfileOptionActions.BLOCK)) {
+
+            }
+            else if(data.getAction().equals(Defs.ProfileOptionActions.SEARCH)) {
+
+            }
         });
         optionsRv.setAdapter(optionsAdapter);
+        name.setText(user.getName());
+        if(user.getIcon() != null) {
+            Picasso.get().load(String.join("/", ApiBuilder.PUBLIC_PATH, user.getIcon())).into(avatar);
+        }
+        if(user.getStatus() != null) {
+            status.setText(user.getStatus());
+        }
+        if(!loggedUser.getId().equals(user.getId())) {
+            editBtn.setVisibility(View.GONE);
+        }
+        else {
+            optionsRv.setVisibility(View.GONE);
+        }
     }
 }

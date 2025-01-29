@@ -7,6 +7,11 @@ import androidx.fragment.app.Fragment;
 public abstract class BaseExtraFragment extends Fragment {
     protected OnBackPressedListener onBackPressedListener;
     protected View back;
+    protected final View.OnClickListener backOnclickListener = (View v) -> {
+        if(onBackPressedListener != null) {
+            onBackPressedListener.OnExtraBackPressed();
+        }
+    };
 
     public interface OnBackPressedListener {
         void OnExtraBackPressed();
@@ -18,11 +23,7 @@ public abstract class BaseExtraFragment extends Fragment {
 
     protected void init() {
         if(back != null) {
-            back.setOnClickListener((View v) -> {
-                if(onBackPressedListener != null) {
-                    onBackPressedListener.OnExtraBackPressed();
-                }
-            });
+            back.setOnClickListener(backOnclickListener);
         }
     }
 }

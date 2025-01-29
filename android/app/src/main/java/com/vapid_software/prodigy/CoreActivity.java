@@ -40,6 +40,7 @@ import com.vapid_software.prodigy.fragments.ChatsFragment;
 import com.vapid_software.prodigy.fragments.CoreFragment;
 import com.vapid_software.prodigy.fragments.MyContactsFragment;
 import com.vapid_software.prodigy.fragments.ProviderFragment;
+import com.vapid_software.prodigy.fragments.UserInfoFragment;
 import com.vapid_software.prodigy.helpers.ConfirmDialog;
 import com.vapid_software.prodigy.helpers.DBHelper;
 import com.vapid_software.prodigy.helpers.Defs;
@@ -152,7 +153,7 @@ public class CoreActivity extends AppCompatActivity implements BaseExtraFragment
 
     private NavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = (MenuItem item) -> {
         int id = item.getItemId();
-        boolean isSelected = id == R.id.nav_my_contacts || id == R.id.nav_chats || id == R.id.nav_contacts || id == R.id.nav_logout || id == R.id.nav_settings || id == R.id.nav_branches || id == R.id.nav_pricing || id == R.id.nav_broadcast || id == R.id.nav_support || id == R.id.nav_terms || id == R.id.nav_provider;
+        boolean isSelected = id == R.id.nav_profile || id == R.id.nav_my_contacts || id == R.id.nav_chats || id == R.id.nav_contacts || id == R.id.nav_logout || id == R.id.nav_settings || id == R.id.nav_branches || id == R.id.nav_pricing || id == R.id.nav_broadcast || id == R.id.nav_support || id == R.id.nav_terms || id == R.id.nav_provider;
         if(isSelected) {
             if(id == R.id.nav_logout) {
                 ConfirmDialog confirmDialog = new ConfirmDialog(
@@ -168,6 +169,12 @@ public class CoreActivity extends AppCompatActivity implements BaseExtraFragment
                     socket.emit(Defs.WS_MESSAGES.CLIENT.LOGOUT);
                 });
                 confirmDialog.show();
+            }
+            else if(id == R.id.nav_profile) {
+                UserInfoFragment fragment = new UserInfoFragment();
+                fragment.setUser(loggedUser);
+                fragment.setOnBackPressedListener(this);
+                loadExtra(fragment);
             }
             else if(id == R.id.nav_provider) {
                 if(!loggedUser.getRole().getId().equals(Defs.Role.PROVIDER)) {
